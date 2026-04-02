@@ -58,4 +58,5 @@ zinit snippet OMZP::sudo
 # --- Completion system ---
 # Must run after all plugins are loaded. zicompinit calls compinit,
 # zicdreplay replays any completions deferred by blockf.
-zinit wait lucid atinit"zicompinit; zicdreplay" for zdharma-continuum/null
+# as"null" avoids the compile warning from the empty zdharma-continuum/null plugin.
+zinit wait lucid as"null" atinit"zicompinit; zicdreplay" for zdharma-continuum/null

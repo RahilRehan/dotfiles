@@ -21,7 +21,15 @@ fi
 # ctrl-t = find file, alt-c = find directory, ctrl-r = history (if atuin not installed)
 # Uses fd as backend (fast, respects .gitignore) and bat for previews.
 if command -v fzf &>/dev/null; then
-    source <(fzf --zsh)
+    if fzf --zsh &>/dev/null; then
+        source <(fzf --zsh)
+    elif [[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/completion.zsh" ]]; then
+        source "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/completion.zsh"
+        source "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/key-bindings.zsh"
+    elif [[ -f /usr/share/fzf/completion.zsh ]]; then
+        source /usr/share/fzf/completion.zsh
+        source /usr/share/fzf/key-bindings.zsh
+    fi
 
     # Use fd instead of find (faster, respects .gitignore)
     if command -v fd &>/dev/null; then
