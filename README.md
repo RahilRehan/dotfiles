@@ -8,7 +8,7 @@
 
 ```bash
 # Clone and install everything
-git clone https://github.com/<your-username>/dotfiles.git ~/dotfiles
+git clone https://github.com/RahilRehan/dotfiles.git ~/dotfiles
 cd ~/dotfiles && bash install.sh
 
 # Or test it first in Docker (no risk to your machine)
