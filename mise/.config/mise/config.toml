@@ -1,0 +1,7 @@
+# mise global config — default toolchain
+# Project-level .mise.toml files override these.
+# https://mise.jdx.dev/configuration.html
+
+[tools]
+node = "lts"
+python = "3.12"

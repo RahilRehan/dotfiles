@@ -1,0 +1,42 @@
+# macOS
+.DS_Store
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+
+# Editors
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Languages
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+target/         # Rust
+vendor/         # Go
+
+# Tools
+.direnv/
+*.log
+
+# Infra
+.terraform/
+*.tfstate
+*.tfstate.backup

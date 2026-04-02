@@ -1,0 +1,7 @@
+# theme.toml — Catppuccin Macchiato flavor
+# Install the flavor first:
+#   ya pack -a yazi-rs/flavors:catppuccin-macchiato
+
+[flavor]
+dark = "catppuccin-macchiato"
+light = "catppuccin-latte"

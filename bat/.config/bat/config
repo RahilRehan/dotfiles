@@ -1,0 +1,15 @@
+# bat — a cat replacement with syntax highlighting
+# https://github.com/sharkdp/bat
+#
+# Usage is identical to cat: bat file.txt, echo "hi" | bat
+# These flags apply to every bat invocation.
+
+# Catppuccin Macchiato theme (matches our starship/delta/terminal theme)
+# Install: bat cache --build (after stow links the theme files)
+--theme="Catppuccin Macchiato"
+
+# Show line numbers and git changes in the gutter, plus a filename header
+--style="numbers,changes,header"
+
+# Use italic for comments/strings (if your terminal font supports it)
+--italic-text=always

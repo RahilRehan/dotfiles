@@ -1,0 +1,110 @@
+# Multi-account git setup (none of these files are tracked in git):
+#
+#   ~/.gitconfig.local       — fallback identity (used outside personal/ and workplace/)
+#   ~/.gitconfig-personal    — identity for repos under ~/personal/
+#   ~/.gitconfig-work        — identity for repos under ~/workplace/
+#
+# Create them with:
+#   git config --file ~/.gitconfig.local    user.name "Your Name"
+#   git config --file ~/.gitconfig.local    user.email "you@example.com"
+#   git config --file ~/.gitconfig-personal user.name "Your Name"
+#   git config --file ~/.gitconfig-personal user.email "personal@example.com"
+#   git config --file ~/.gitconfig-work     user.name "Your Name"
+#   git config --file ~/.gitconfig-work     user.email "work@example.com"
+#
+# Git picks the right identity automatically based on repo location.
+# The install script prompts for these on first run.
+
+# Default / fallback identity
+[include]
+    path = ~/.gitconfig.local
+
+# Directory-based identity overrides
+[includeIf "gitdir:~/personal/"]
+    path = ~/.gitconfig-personal
+
+[includeIf "gitdir:~/workplace/"]
+    path = ~/.gitconfig-work
+
+[init]
+    # All new repos start with "main" instead of "master"
+    defaultBranch = main
+
+[core]
+    # Use delta for all diff output (syntax highlighting, side-by-side, line numbers)
+    pager = delta
+    # Normalize line endings: convert CRLF to LF on commit (cross-platform safety)
+    autocrlf = input
+    # Global gitignore (DS_Store, node_modules, .env, etc.)
+    excludesFile = ~/.config/git/ignore
+
+[pull]
+    # Rebase instead of merge on "git pull". Keeps history linear, no merge commits.
+    rebase = true
+
+[push]
+    # "git push" pushes current branch to same-named remote branch
+    default = current
+    # First push auto-creates upstream tracking. No more "git push -u origin branch".
+    autoSetupRemote = true
+    # Push tags that point to pushed commits
+    followTags = true
+
+[fetch]
+    # Auto-delete local refs to branches deleted on remote
+    prune = true
+    pruneTags = true
+
+[merge]
+    # Show 3 sections in conflicts: ours / original / theirs (instead of just ours/theirs).
+    # The "original" section shows what the code looked like before either side changed it.
+    conflictstyle = zdiff3
+
+[rebase]
+    # Stash uncommitted changes before rebase, re-apply after
+    autostash = true
+    # Auto-squash commits with "fixup!" or "squash!" prefixes
+    autosquash = true
+
+[diff]
+    # Better diff algorithm — fewer nonsensical hunks on large files
+    algorithm = histogram
+    # Detect moved lines and color them differently from added/removed
+    colorMoved = default
+    # Detect copies in addition to renames
+    renames = copies
+
+[delta]
+    # Side-by-side diffs with syntax highlighting
+    navigate = true
+    dark = true
+    side-by-side = true
+    line-numbers = true
+
+[interactive]
+    # Use delta for interactive commands like "git add -p"
+    diffFilter = delta --color-only
+
+[rerere]
+    # "Reuse Recorded Resolution" — if you resolve a merge conflict,
+    # git remembers the resolution and auto-applies it next time.
+    enabled = true
+
+[branch]
+    # "git branch" sorts by most recently committed (most useful branches first)
+    sort = -committerdate
+
+[alias]
+    # Quick shortcuts
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    # Undo last commit but keep changes staged
+    undo = reset --soft HEAD~1
+    # Quick "work in progress" commit
+    wip = !git add -A && git commit -m 'wip'
+    # Amend last commit without editing message
+    amend = commit --amend --no-edit
+    # What did I do today?
+    today = log --since=midnight --oneline --no-merges
