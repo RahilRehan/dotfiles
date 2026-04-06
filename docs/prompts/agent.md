@@ -1,6 +1,4 @@
-# Global Instructions
-
-See [AGENTS.md](./AGENTS.md) for available power tools and their preferred usage patterns.
+# Coding Agent Instructions
 
 ## Investigation First
 

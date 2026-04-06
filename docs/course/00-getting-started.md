@@ -73,7 +73,7 @@ ls ~/dotfiles/
 Expected output:
 
 ```
-Brewfile  Makefile  atuin  claude  git       lazygit  starship  yazi
+Brewfile  Makefile  atuin  git       lazygit  starship  yazi
 CONTRIBUTING.md  README.md  bat    docs   install.sh  mise     tmux      zsh
 ```
 

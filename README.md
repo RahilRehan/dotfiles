@@ -94,11 +94,6 @@ Every tool here replaces something old and slow with something modern and fast. 
 | [**glow**](https://github.com/charmbracelet/glow) | reading raw markdown | Renders markdown beautifully in the terminal. Great for READMEs and docs. |
 | [**hyperfine**](https://github.com/sharkdp/hyperfine) | `time` | Statistical benchmarking. Compare commands with warmup runs, confidence intervals, and export to JSON/CSV. |
 
-### AI Development
-
-| Tool | What it does |
-|------|-------------|
-| [**Claude Code**](https://claude.ai/code) | AI coding assistant from Anthropic. Global settings with allowed/denied commands, plus `AGENTS.md` with tool reference so Claude uses the modern tools instead of legacy ones. |
 
 ---
 
@@ -134,7 +129,7 @@ dotfiles/
 ├── lazygit/.config/lazygit/      # lazygit config (delta pager, Catppuccin)
 ├── yazi/.config/yazi/            # yazi config + Catppuccin flavor
 ├── mise/.config/mise/            # Global runtimes (node lts, python 3.12)
-├── claude/.claude/               # Claude Code settings + AGENTS.md
+├── docs/prompts/                 # Reusable agent instructions + command reference
 ├── Brewfile                      # macOS packages
 ├── Makefile                      # make install, make test, make stow
 ├── install.sh                    # Cross-platform bootstrap

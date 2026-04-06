@@ -35,7 +35,7 @@ install_packages() {
 
 backup_existing() {
     local backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
-    local files=(".zshrc" ".gitconfig" ".tmux.conf" ".claude/settings.json" ".claude/CLAUDE.md")
+    local files=(".zshrc" ".gitconfig" ".tmux.conf")
 
     for f in "${files[@]}"; do
         if [ -e "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then

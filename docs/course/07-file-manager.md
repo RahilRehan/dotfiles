@@ -20,7 +20,7 @@ yazi uses **Miller columns** — three panels that give you context at every lev
 │ Parent dir  │ Current dir       │ Preview              │
 │             │                   │                      │
 │ bat/        │ > 00-env.zsh   4K │ # Environment vars   │
-│ claude/     │   10-options.zsh  │ # set before zsh     │
+│ starship/   │   10-options.zsh  │ # set before zsh     │
 │ docs/       │   20-plugins.zsh  │ # reads its configs  │
 │ git/        │   30-completions… │ ...                  │
 │ > zsh/      │   40-aliases.zsh  │                      │

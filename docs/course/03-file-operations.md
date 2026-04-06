@@ -71,7 +71,6 @@ Expected output (abbreviated):
 
 ```
  bat
- claude
  docs
  git
  tmux
