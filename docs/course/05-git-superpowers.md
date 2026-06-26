@@ -143,17 +143,14 @@ git today    # Show your commits from today
 cd /tmp && mkdir git-demo && cd git-demo && git init
 ```
 
-> **Docker note:** `git commit` requires an identity. The install script skips the interactive identity prompt in Docker, so you must set one manually:
->
-> ```bash
-> git config user.name "Test User"
-> git config user.email "test@example.com"
-> ```
+If you skipped the install script's identity prompt, set one manually:
 
 ```bash
 git config user.name "Test User"
 git config user.email "test@example.com"
+```
 
+```bash
 echo "hello" > file.txt && git add . && git commit -m "first commit"
 echo "world" >> file.txt && git add . && git commit -m "second commit"
 
@@ -263,8 +260,6 @@ This provides **100+ short aliases** for common git commands. You don't need to 
 | `gsta` | `git stash push` | |
 | `gstp` | `git stash pop` | |
 
-> **Docker note:** `gp` (`git push`) and `gl` (`git pull`) won't work in the Docker playground — there's no remote configured. All other aliases work fine with local repos.
-
 ### Try it
 
 ```bash
@@ -353,8 +348,6 @@ Our config (`lazygit/.config/lazygit/config.yml`) sets Nerd Font icons, file ico
 | `P` | Pull |
 | `q` | Quit |
 
-> **Docker note:** Push (`p`) and Pull (`P`) require a remote and won't work in the playground. Everything else — staging, committing, branching, rebasing — works locally.
-
 ### Try it
 
 ```bash
@@ -410,7 +403,7 @@ The install script prompts for these on first run.
 ### Verify it
 
 ```bash
-# On your host machine, check which identity a repo uses:
+# Check which identity a repo uses:
 cd ~/personal/some-repo
 git config user.email
 # → personal@example.com
@@ -419,8 +412,6 @@ cd ~/workplace/some-repo
 git config user.email
 # → work@company.com
 ```
-
-> **Host only** — This setup is for your host machine. In the Docker playground, git identities aren't configured (the install script skips the interactive prompt). Use `git config user.name` / `git config user.email` per-repo as shown earlier.
 
 ## Global Gitignore
 
@@ -431,7 +422,7 @@ bat ~/.config/git/ignore
 ```
 
 It covers:
-- **OS files:** `.DS_Store`, `Thumbs.db`
+- **OS files:** `.DS_Store`
 - **Editor files:** `.idea/`, `.vscode/`, `*.swp`
 - **Secrets:** `.env`, `.env.local`, `*.pem`, `*.key`
 - **Language artifacts:** `node_modules/`, `__pycache__/`, `venv/`, `target/`, `vendor/`

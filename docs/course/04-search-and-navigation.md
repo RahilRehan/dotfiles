@@ -48,7 +48,7 @@ Press **Ctrl-T** at any point on the command line. A file picker appears with a 
 ```bash
 # Example: open a file in vim without knowing its exact path
 vim [press Ctrl-T, type "starship", select the match, press Enter]
-# → vim /home/testuser/.config/starship.toml
+# → vim ~/.config/starship.toml
 ```
 
 The preview shows syntax-highlighted file contents via bat. Toggle it with **Ctrl-/**.
@@ -61,7 +61,7 @@ Press **Alt-C** anywhere. A directory picker appears with an **eza tree preview*
 # Example: jump into a deeply nested config directory
 [press Alt-C, type "zsh", select .config/zsh, press Enter]
 pwd
-# → /home/testuser/.config/zsh
+# → ~/.config/zsh
 ```
 
 > **Note:** Alt-C sends an escape sequence that some terminals and multiplexers intercept. If it doesn't work inside tmux, a nested terminal, or your specific terminal emulator, check that your terminal is sending the correct Alt/Meta key (Ghostty and iTerm2 both have an "Option as Meta" setting). As a fallback, you can always use `cd **[Tab]` which triggers fzf's tab completion for directories, or `zi` from zoxide (covered below).
@@ -111,7 +111,7 @@ The pattern is always the same: **generate a list → pipe into fzf → do somet
 
 # 2. Press Alt-C, type "zsh", select a directory — you cd into it.
 pwd
-# → /home/testuser/.config/zsh (or whichever you chose)
+# → ~/.config/zsh (or whichever you chose)
 
 # 3. Pipe a file list into fzf and preview:
 fd -e zsh ~/dotfiles | fzf --preview 'bat --color=always {}'
@@ -135,7 +135,7 @@ zoxide ranks directories by **frecency** — a blend of **frequency** (how often
 # Build up some history by visiting a few directories:
 cd /etc
 cd /var/log
-cd /home/testuser/dotfiles
+cd ~/dotfiles
 cd /tmp
 ```
 
@@ -172,7 +172,7 @@ pwd
 Expected output:
 
 ```
-/home/testuser/dotfiles
+~/dotfiles
 ```
 
 ```bash
@@ -190,7 +190,7 @@ Expected output (after the visits above):
 
 ```
   10.0 /etc
-  10.0 /home/testuser/dotfiles
+  10.0 ~/dotfiles
   10.0 /tmp
   10.0 /var/log
 ```
@@ -233,10 +233,10 @@ false   # intentional failure (exit code 1)
 Expected display (compact style):
 
 ```
- 2026-04-02 12:01:00  0.001s  1    /home/testuser    false
- 2026-04-02 12:00:59  1.003s  0    /home/testuser    sleep 1
- 2026-04-02 12:00:58  0.002s  0    /home/testuser    ls -la /tmp
- 2026-04-02 12:00:57  0.001s  0    /home/testuser    echo "hello from atuin"
+ 2026-04-02 12:01:00  0.001s  1    ~    false
+ 2026-04-02 12:00:59  1.003s  0    ~    sleep 1
+ 2026-04-02 12:00:58  0.002s  0    ~    ls -la /tmp
+ 2026-04-02 12:00:57  0.001s  0    ~    echo "hello from atuin"
 ```
 
 Type to fuzzy-filter across all fields. Press Enter to execute, or Tab to insert the command for editing.

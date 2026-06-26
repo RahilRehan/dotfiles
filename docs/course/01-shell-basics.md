@@ -12,7 +12,7 @@ A sluggish shell is a constant tax on your workflow. Every new tab, every `exec 
 time zsh -ic exit
 ```
 
-Expected output (in this Docker container):
+Expected output:
 
 ```
 zsh -ic exit  0.05s user 0.03s system 95% cpu 0.082 total
@@ -214,10 +214,10 @@ echo $XDG_STATE_HOME    # state (history, logs)
 ```
 
 ```
-/home/testuser/.config
-/home/testuser/.local/share
-/home/testuser/.cache
-/home/testuser/.local/state
+/Users/you/.config
+/Users/you/.local/share
+/Users/you/.cache
+/Users/you/.local/state
 ```
 
 History uses XDG too — no more `~/.zsh_history` cluttering your home:
@@ -227,7 +227,7 @@ echo $HISTFILE
 ```
 
 ```
-/home/testuser/.local/state/zsh/history
+/Users/you/.local/state/zsh/history
 ```
 
 ### Homebrew init
@@ -238,10 +238,8 @@ The config detects all possible Homebrew install locations:
 
 | Path | Platform |
 |------|----------|
-| `/opt/homebrew` | macOS (Apple Silicon) |
-| `/usr/local` | macOS (Intel) |
-| `/home/linuxbrew/.linuxbrew` | Linux (system-wide) |
-| `$HOME/.linuxbrew` | Linux (user-local) |
+| `/opt/homebrew` | Apple Silicon |
+| `/usr/local` | Intel |
 
 ```bash
 # From 00-env.zsh:
@@ -249,13 +247,10 @@ if [ -f /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [ -f /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv)"
-# ... linux paths ...
 fi
 ```
 
 `brew shellenv` exports `PATH`, `MANPATH`, and `INFOPATH`. The `eval` runs it inline so those variables are set for the current session.
-
-> The Docker container doesn't use Homebrew — tools are installed via `apt`. The Homebrew block silently skips when none of these paths exist.
 
 ## The Plugin System (`20-plugins.zsh`)
 
@@ -409,7 +404,7 @@ extract archive.tar.gz
 
 ### `killport` — kill a process by port number
 
-> **Host only:** `killport` uses `lsof`, which is not installed in the Docker playground. Works on macOS and most Linux desktops.
+`killport` uses `lsof` to find and kill whatever process is listening on a given port:
 
 ```bash
 killport 3000
@@ -423,7 +418,7 @@ Sends `SIGTERM` first; if the process survives after 1 second, follows up with `
 
 ### `serve` — instant HTTP file server
 
-> **Host only:** `serve` uses `python3 -m http.server`, which is not installed in the Docker playground. Works on any system with Python 3.
+`serve` uses Python's built-in HTTP server:
 
 ```bash
 serve 3000    # serves current directory on http://localhost:3000
@@ -457,11 +452,13 @@ The `--wait` flag on Cursor makes the command **block** until you close the file
 echo $EDITOR
 ```
 
-In this Docker container (Cursor and Neovim aren't installed):
+If Cursor isn't installed, the chain falls back to `nvim`, then `vim`:
 
 ```
-vim
+nvim
 ```
+
+(or `vim` if Neovim isn't installed)
 
 `$VISUAL` is set to the same value. Historically `VISUAL` was for full-screen editors and `EDITOR` for line editors — most modern tools check both, so setting them identically avoids surprises.
 

@@ -2,9 +2,7 @@
 
 Real workflows that combine multiple tools. This is where the toolbox pays off.
 
-Every workflow in this lesson uses the **dotfiles repo itself** as the sample project — it's already inside your Docker container at `~/dotfiles`. No setup required.
-
-> Workflows marked **Host only** require macOS and Homebrew-installed tools. Everything else runs in Docker.
+Every workflow in this lesson uses the **dotfiles repo itself** as the sample project — it's already at `~/dotfiles` after install. No setup required.
 
 ## Workflow 1: Explore This Codebase
 
@@ -22,7 +20,6 @@ Expected output (abbreviated):
 ```
 dotfiles
 ├── Brewfile
-├── Dockerfile
 ├── Makefile
 ├── bat
 │   └── .config
@@ -258,9 +255,7 @@ fd . -t f --size +1m
 
 **What you practiced:** `rg` with alternation (`|`), file type filters (`-t`), glob exclusions, `fd` with size/time filters, `fzf` with preview for interactive selection.
 
-## Workflow 5: Host-Only Workflows
-
-> **Host only** — these workflows require tools installed via Homebrew on macOS. They will not work inside the Docker container. See [Lesson 09](09-system-and-containers.md) for installation.
+## Workflow 5: System Monitoring & Cleanup
 
 ### Disk Cleanup
 

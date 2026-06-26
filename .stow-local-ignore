@@ -1,11 +1,9 @@
 \.git
 \.gitignore
-\.dockerignore
 LICENSE
 CONTRIBUTING\.md
 README\.md
 Makefile
 Brewfile
-Dockerfile
 docs
 iterm2

@@ -7,29 +7,13 @@ info()    { echo -e "\033[0;34m::\033[0m $1"; }
 success() { echo -e "\033[0;32mok\033[0m $1"; }
 warn()    { echo -e "\033[1;33m!!\033[0m $1"; }
 
-detect_os() {
-    case "$(uname -s)" in
-        Darwin) echo "macos" ;;
-        Linux)  echo "linux" ;;
-        *)      echo "unknown" ;;
-    esac
-}
-
 install_packages() {
-    case "$OS" in
-        macos)
-            if ! command -v brew &>/dev/null; then
-                info "Installing Homebrew..."
-                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-                eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv 2>/dev/null)"
-            fi
-            brew bundle --file="$DOTFILES_DIR/Brewfile"
-            ;;
-        linux)
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq zsh git curl stow
-            ;;
-    esac
+    if ! command -v brew &>/dev/null; then
+        info "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv 2>/dev/null)"
+    fi
+    brew bundle --file="$DOTFILES_DIR/Brewfile"
     success "Packages installed"
 }
 
@@ -50,7 +34,7 @@ stow_packages() {
     cd "$DOTFILES_DIR"
     for dir in */; do
         dir="${dir%/}"
-        [[ "$dir" == .git || "$dir" == docs || "$dir" == iterm2 ]] && continue
+        [[ "$dir" == .git || "$dir" == docs || "$dir" == iterm2 || "$dir" == ai ]] && continue
         stow --restow --target="$HOME" "$dir"
         success "Stowed $dir"
     done
@@ -104,7 +88,6 @@ _setup_git_identity() {
 }
 
 setup_iterm2() {
-    [[ "$OS" != "macos" ]] && return
     local target_dir="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     local target="$target_dir/dotfiles.json"
     if [ -L "$target" ] || [ -f "$target" ]; then
@@ -117,13 +100,33 @@ setup_iterm2() {
     warn "Open iTerm2 → Settings → Profiles → Keys → Presets → Natural Text Editing"
 }
 
+setup_ai() {
+    bash "$DOTFILES_DIR/ai/bin/ai-sync"
+
+    local rel
+    for rel in .cursor/mcp.json .claude/mcp.json .pi/agent/mcp.json; do
+        if [[ -f "$HOME/$rel" && ! -L "$HOME/$rel" ]]; then
+            rm "$HOME/$rel"
+            success "Replaced ~/$rel with stowed config"
+        fi
+    done
+
+    cd "$DOTFILES_DIR" && stow --restow --target="$HOME" ai
+    success "AI MCP synced"
+}
+
 main() {
-    OS=$(detect_os)
-    info "OS: $OS ($(uname -m))"
+    if [[ "$(uname -s)" != "Darwin" ]]; then
+        echo "This dotfiles repo supports macOS only." >&2
+        exit 1
+    fi
+
+    info "macOS ($(uname -m))"
 
     install_packages
     mkdir -p "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/state/zsh"
     backup_existing
+    setup_ai
     stow_packages
     setup_shell
     setup_git_user

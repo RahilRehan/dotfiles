@@ -23,12 +23,15 @@ fi
 if command -v fzf &>/dev/null; then
     if fzf --zsh &>/dev/null; then
         source <(fzf --zsh)
-    elif [[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/completion.zsh" ]]; then
-        source "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/completion.zsh"
+    elif [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+        source /usr/share/doc/fzf/examples/key-bindings.zsh
+        source /usr/share/doc/fzf/examples/completion.zsh
+    elif [[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/key-bindings.zsh" ]]; then
         source "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/key-bindings.zsh"
-    elif [[ -f /usr/share/fzf/completion.zsh ]]; then
-        source /usr/share/fzf/completion.zsh
+        source "${XDG_DATA_HOME:-$HOME/.local/share}/fzf/shell/completion.zsh"
+    elif [[ -f /usr/share/fzf/key-bindings.zsh ]]; then
         source /usr/share/fzf/key-bindings.zsh
+        source /usr/share/fzf/completion.zsh
     fi
 
     # Use fd instead of find (faster, respects .gitignore)

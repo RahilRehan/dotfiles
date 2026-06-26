@@ -2,29 +2,18 @@
 
 # Lesson 00 — Getting Started
 
-## The Docker Playground
+## Getting Set Up
 
-Every lesson uses a Docker container so you can experiment freely without affecting your machine. Think of it as a disposable Linux VM that boots in seconds.
+Every lesson assumes you've installed the dotfiles on your Mac:
 
 ```bash
-# Build the playground (first time takes ~2 min, cached after)
-docker build -t dotfiles-test .
-
-# Enter the playground
-docker run -it --rm dotfiles-test
+git clone https://github.com/RahilRehan/dotfiles.git ~/dotfiles
+cd ~/dotfiles && bash install.sh
 ```
 
-Breaking down that `docker run` command:
+The install script installs Homebrew packages, symlinks configs with Stow, and sets zsh as your default shell. After it finishes, open a new terminal (or run `exec zsh`) and you're ready.
 
-| Flag | Purpose |
-|------|---------|
-| `-it` | **Interactive** + **TTY** — gives you a shell you can type into |
-| `--rm` | **Remove on exit** — deletes the container (filesystem, processes, everything) the moment you type `exit`. Without this flag, stopped containers accumulate on disk. You'd need `docker container prune` to clean them up. This is what makes the playground truly disposable — every `docker run` gives you a clean slate. |
-| `dotfiles-test` | The image name from the `docker build` step |
-
-You're now inside an Ubuntu container (user `testuser`) with all the tools installed and configs symlinked. Everything you do is throwaway — type `exit` and it's gone.
-
-> **Tip:** Keep this lesson open in one terminal and the container in another.
+> **Tip:** Keep this lesson open in one window and your terminal in another.
 
 ---
 
@@ -55,7 +44,7 @@ ls -la ~/.config/starship.toml
 Expected output:
 
 ```
-lrwxrwxrwx 1 testuser testuser 47 ... /home/testuser/.config/starship.toml -> ../dotfiles/starship/.config/starship.toml
+lrwxr-xr-x  1 you  staff  47 ... ~/.config/starship.toml -> ../dotfiles/starship/.config/starship.toml
 ```
 
 The `->` confirms it's a symlink pointing back into the repo. Edit the file in the repo and every tool sees the change immediately — no copying, no reloading.
@@ -88,7 +77,7 @@ ls -la ~/.config/bat/config
 Expected output:
 
 ```
-lrwxrwxrwx 1 testuser testuser 42 ... /home/testuser/.config/bat/config -> ../../dotfiles/bat/.config/bat/config
+lrwxr-xr-x  1 you  staff  42 ... ~/.config/bat/config -> ../../dotfiles/bat/.config/bat/config
 ```
 
 The config is a symlink into the repo. `bat` (a syntax-highlighted `cat` replacement — we'll cover it in [Lesson 03](03-file-operations.md)) reads its config from here.
@@ -110,7 +99,7 @@ ls ~/.config/bat/config
 Expected output:
 
 ```
-ls: cannot access '/home/testuser/.config/bat/config': No such file or directory
+ls: ~/.config/bat/config: No such file or directory
 ```
 
 The symlink is removed. The actual config file still lives safely in `~/dotfiles/bat/.config/bat/config` — stow never deletes real files, only the symlinks it created.
@@ -132,7 +121,7 @@ ls -la ~/.config/bat/config
 Expected output:
 
 ```
-lrwxrwxrwx 1 testuser testuser 42 ... /home/testuser/.config/bat/config -> ../../dotfiles/bat/.config/bat/config
+lrwxr-xr-x  1 you  staff  42 ... ~/.config/bat/config -> ../../dotfiles/bat/.config/bat/config
 ```
 
 The config reappears instantly — stow recreated the symlink. No files were copied or deleted.
@@ -199,7 +188,7 @@ Here's every file, what it does, and why it must load in that position:
 | `40-aliases.zsh` | Aliases: `ls`→`eza`, `cat`→`bat`, safety nets (`rm -i`), shortcuts (`lg`, `c`, `reload`) | **After completions, before functions.** Aliases may reference tools whose paths were set in `00`. Placed after completions so that completion definitions apply to the original commands, not the aliases. |
 | `50-functions.zsh` | Shell functions: `mkcd`, `extract`, `killport`, `serve` | **Standalone utilities.** These don't depend on much, but placing them after aliases keeps the file focused. Functions are more complex than aliases and deserve their own file. |
 | `60-tools.zsh` | Tool initialization hooks: `zoxide init`, `atuin init`, `fzf --zsh`, `mise activate`, `direnv hook`, yazi wrapper, `starship init` | **Near the end.** Every `eval "$(tool init zsh)"` call needs the tool on `$PATH` (from `00`). Starship specifically must be last among tools because it wraps the prompt — anything that modifies the prompt after starship would be overwritten. |
-| `70-platform.zsh` | macOS vs. Linux-specific overrides: clipboard aliases, DNS flush, platform utilities | **Last.** Platform-specific config may override anything set by earlier files. On macOS it might tweak aliases; on Linux it adds `pbcopy`/`pbpaste` compatibility wrappers. |
+| `70-platform.zsh` | macOS-specific aliases: DNS flush, cleanup, port listing | **Last.** Platform-specific config may override anything set by earlier files. |
 
 ### Why gaps between the numbers?
 

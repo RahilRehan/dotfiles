@@ -1,7 +1,14 @@
-.PHONY: install stow brew test clean
+.PHONY: install stow brew lint help ai-sync
 
 install: ## Full install (packages + stow + shell setup)
 	bash install.sh
+
+ai-sync: ## Sync MCP configs and stow ai package
+	bash ai/bin/ai-sync
+	@for rel in .cursor/mcp.json .claude/mcp.json .pi/agent/mcp.json; do \
+		[ -f "$$HOME/$$rel" ] && [ ! -L "$$HOME/$$rel" ] && rm "$$HOME/$$rel"; \
+	done
+	stow --restow --target="$$HOME" ai
 
 stow: ## Re-stow all packages
 	@for dir in */; do \
@@ -13,10 +20,6 @@ stow: ## Re-stow all packages
 
 brew: ## Install/update Homebrew packages
 	brew bundle --file=Brewfile
-
-test: ## Build and run Docker test container
-	docker build -t dotfiles-test .
-	docker run -it --rm dotfiles-test
 
 unstow: ## Remove all symlinks (reverse stow)
 	@for dir in */; do \
@@ -30,9 +33,6 @@ lint: ## Validate shell configs
 	@echo "Checking zsh syntax..."
 	@for f in zsh/.config/zsh/*.zsh; do zsh -n "$$f" && echo "ok $$f"; done
 	@zsh -n zsh/.zshrc && echo "ok zsh/.zshrc"
-
-clean: ## Remove Docker test image
-	docker rmi dotfiles-test 2>/dev/null || true
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'

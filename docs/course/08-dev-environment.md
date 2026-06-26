@@ -105,7 +105,7 @@ Expected output:
 mise trusted ~/tmp/my-project/.mise.toml
 ```
 
-> **When is trust needed?** In the Docker playground, `mise trust` runs automatically for the global config. Configs you create yourself with `mise use` are trusted implicitly. You only need `mise trust` explicitly when you clone someone else's repo that already has a `.mise.toml`.
+> **When is trust needed?** Configs you create yourself with `mise use` are trusted implicitly. You only need `mise trust` explicitly when you clone someone else's repo that already has a `.mise.toml`.
 
 Install the project-specific versions:
 

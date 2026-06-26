@@ -1,8 +1,8 @@
 # Modern Developer Dotfiles
 
-> A curated dev environment with **30+ modern CLI tools**, managed with GNU Stow. Built for macOS, testable on Linux via Docker.
+> A curated dev environment with **30+ modern CLI tools**, managed with GNU Stow. Built for macOS.
 
-**What makes this different?** Most dotfiles repos are config dumps. This one is a **learning resource** — every tool is explained, every config is commented, and there's a [hands-on course](#course) to learn it all in a Docker playground.
+**What makes this different?** Most dotfiles repos are config dumps. This one is a **learning resource** — every tool is explained, every config is commented, and there's a [hands-on course](#course) to learn it all.
 
 ## Quick Start
 
@@ -10,12 +10,9 @@
 # Clone and install everything
 git clone https://github.com/RahilRehan/dotfiles.git ~/dotfiles
 cd ~/dotfiles && bash install.sh
-
-# Or test it first in Docker (no risk to your machine)
-make test
 ```
 
-The install script detects your OS, installs packages, symlinks configs with Stow, sets zsh as default shell, and sets up git user info.
+The install script installs Homebrew packages, symlinks configs with Stow, sets zsh as default shell, and sets up git user info.
 
 ---
 
@@ -75,7 +72,7 @@ Every tool here replaces something old and slow with something modern and fast. 
 |------|----------|-----|
 | [**dust**](https://github.com/bootandy/dust) | `du` | Visual disk usage tree sorted by size. Instantly see what's eating your disk. |
 | [**duf**](https://github.com/muesli/duf) | `df` | Disk free with color, grouped by filesystem type. |
-| [**bottom**](https://github.com/ClementTsang/bottom) (`btm`) | `top` / `htop` | System monitor with CPU/memory/network graphs, process filtering, and cross-platform support. |
+| [**bottom**](https://github.com/ClementTsang/bottom) (`btm`) | `top` / `htop` | System monitor with CPU/memory/network graphs and process filtering. |
 | [**procs**](https://github.com/dalance/procs) | `ps` | Process viewer with tree view, keyword search, and colored output. |
 
 ### Container & Kubernetes TUIs
@@ -114,10 +111,7 @@ dotfiles/
 │       ├── 40-aliases.zsh        #   Modern tool aliases (eza, bat, dust, etc.)
 │       ├── 50-functions.zsh      #   mkcd, extract, killport, serve
 │       ├── 60-tools.zsh          #   Tool hooks (zoxide, atuin, fzf, mise, direnv, yazi, starship)
-│       ├── 70-platform.zsh       #   OS dispatch
-│       └── platform/
-│           ├── macos.zsh         #   flush-dns, macOS aliases
-│           └── linux.zsh         #   clipboard compat (pbcopy/pbpaste), xdg-open
+│       └── 70-platform.zsh       #   macOS aliases (flush-dns, cleanup, ports)
 ├── starship/.config/             # Starship prompt (Catppuccin Macchiato)
 ├── git/
 │   ├── .gitconfig                # Modern git config (delta, rebase, autostash)
@@ -129,11 +123,17 @@ dotfiles/
 ├── lazygit/.config/lazygit/      # lazygit config (delta pager, Catppuccin)
 ├── yazi/.config/yazi/            # yazi config + Catppuccin flavor
 ├── mise/.config/mise/            # Global runtimes (node lts, python 3.12)
+├── ai/                           # AI agent config (Cursor, Claude, Codex, Pi)
+│   ├── skills/                   #   Custom skill sources (install via npx skills)
+│   ├── mcp/servers.json          #   Shared MCP server definitions
+│   ├── bin/ai-sync               #   Generate per-tool MCP configs
+│   ├── .cursor/mcp.json          #   Cursor MCP (stowed)
+│   ├── .claude/mcp.json          #   Claude Code MCP (stowed)
+│   └── .pi/agent/mcp.json        #   Pi MCP via pi-mcp-adapter (stowed)
 ├── docs/prompts/                 # Reusable agent instructions + command reference
 ├── Brewfile                      # macOS packages
-├── Makefile                      # make install, make test, make stow
-├── install.sh                    # Cross-platform bootstrap
-├── Dockerfile                    # Ubuntu test container
+├── Makefile                      # make install, make stow
+├── install.sh                    # macOS bootstrap
 └── docs/course/                  # Hands-on tutorial for every tool
 ```
 
@@ -142,15 +142,6 @@ dotfiles/
 Everything uses **Catppuccin Macchiato** — a consistent dark theme across all tools:
 
 Starship prompt, tmux status bar, fzf picker, bat syntax highlighting, lazygit UI, yazi file manager, iTerm2 terminal.
-
-## Platform Support
-
-| | macOS (primary) | Linux (Docker / EC2) |
-|---|---|---|
-| Package install | Homebrew (`Brewfile`) | `apt-get` + GitHub releases |
-| Shell | zsh (default) | zsh (set by `install.sh`) |
-| Terminal | iTerm2 (Dynamic Profile) | N/A (SSH) |
-| Stow packages | All | All except `iterm2` |
 
 ## Key Bindings
 
@@ -182,18 +173,11 @@ Starship prompt, tmux status bar, fzf picker, bat syntax highlighting, lazygit U
 
 ## Course
 
-**New to these tools?** There's a hands-on course in [`docs/course/`](docs/course/) that teaches every tool from scratch using Docker as a safe playground.
-
-```bash
-# Start the playground
-docker build -t dotfiles-test . && docker run -it dotfiles-test
-
-# Then follow the lessons in docs/course/
-```
+**New to these tools?** There's a hands-on course in [`docs/course/`](docs/course/) that teaches every tool from scratch.
 
 | Lesson | What you'll learn |
 |--------|-------------------|
-| [00 - Getting Started](docs/course/00-getting-started.md) | Docker playground setup, how stow works |
+| [00 - Getting Started](docs/course/00-getting-started.md) | Install, how stow works |
 | [01 - Shell Basics](docs/course/01-shell-basics.md) | Modular zsh config, zinit plugins, shell options |
 | [02 - The Prompt](docs/course/02-the-prompt.md) | Starship configuration, git status, Catppuccin theming |
 | [03 - File Operations](docs/course/03-file-operations.md) | bat, eza, fd, ripgrep, sd — replacing the classics |
@@ -211,7 +195,7 @@ docker build -t dotfiles-test . && docker run -it dotfiles-test
 
 1. Create `toolname/.config/toolname/config` in the dotfiles repo
 2. Run `stow toolname` to symlink it to `$HOME`
-3. Add to `Brewfile` (macOS) and `Dockerfile` (Ubuntu) if needed
+3. Add to `Brewfile` if needed
 4. Add shell integration to `zsh/.config/zsh/60-tools.zsh` if needed
 5. Add alias to `zsh/.config/zsh/40-aliases.zsh` if helpful
 
@@ -237,6 +221,22 @@ git config --file ~/.gitconfig-work     user.email "work@example.com"
 Git picks the right identity automatically — no manual switching. Verify with `git config user.email` inside any repo.
 
 Machine-specific shell config goes in `~/.config/zsh/local.zsh` (gitignored).
+
+## AI Tools
+
+Skills via [`npx skills`](https://skills.sh/docs), MCP via `make ai-sync`. See [ai/README.md](ai/README.md).
+
+```bash
+npx skills add vercel-labs/agent-skills -g -s frontend-design \
+  -a cursor -a claude-code -a codex -a pi -y
+make ai-sync
+```
+
+| What | How |
+|------|-----|
+| Skills | `npx skills` (see ai/README.md) |
+| MCP | `ai/mcp/servers.json` → `make ai-sync` |
+| Secrets | `~/.config/ai/secrets.env` |
 
 ## License
 

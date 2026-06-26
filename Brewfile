@@ -9,6 +9,7 @@ brew "git-delta"
 brew "lazygit"
 
 # Phase 3: Modern coreutils
+brew "jq"
 brew "bat"
 brew "eza"
 brew "zoxide"

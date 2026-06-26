@@ -33,7 +33,7 @@
 [core]
     # Use delta for all diff output (syntax highlighting, side-by-side, line numbers)
     pager = delta
-    # Normalize line endings: convert CRLF to LF on commit (cross-platform safety)
+    # Normalize line endings: convert CRLF to LF on commit
     autocrlf = input
     # Global gitignore (DS_Store, node_modules, .env, etc.)
     excludesFile = ~/.config/git/ignore

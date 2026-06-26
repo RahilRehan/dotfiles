@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# Generate per-tool MCP configs from ai/mcp/servers.json
+set -euo pipefail
+
+AI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SERVERS_JSON="$AI_DIR/mcp/servers.json"
+SECRETS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/ai/secrets.env"
+
+MARKER_BEGIN="# BEGIN dotfiles-ai-mcp"
+MARKER_END="# END dotfiles-ai-mcp"
+
+info()  { echo -e "\033[0;34m::\033[0m $1" >&2; }
+ok()    { echo -e "\033[0;32mok\033[0m $1" >&2; }
+
+require_jq() {
+    command -v jq &>/dev/null || {
+        echo "ai-sync requires jq (brew install jq)" >&2
+        exit 1
+    }
+}
+
+load_secrets() {
+    if [[ -f "$SECRETS_FILE" ]]; then
+        # shellcheck disable=SC1090
+        set -a && source "$SECRETS_FILE" && set +a
+        ok "Loaded secrets from $SECRETS_FILE"
+    fi
+}
+
+build_mcp_json() {
+    local tool="$1"
+    jq -c --arg tool "$tool" '
+        { mcpServers: (
+            .servers
+            | to_entries
+            | map(select(.value.tools | index($tool)))
+            | map({ key: .key, value: .value.config })
+            | from_entries
+        )}
+    ' "$SERVERS_JSON"
+}
+
+write_json_mcp() {
+    local tool="$1" dest="$2"
+    mkdir -p "$(dirname "$dest")"
+    build_mcp_json "$tool" | jq '.' >"$dest"
+    ok "MCP ($tool): $dest"
+}
+
+sync_codex_mcp() {
+    local codex_config="$HOME/.codex/config.toml"
+    local fragment tmp
+    fragment="$(mktemp)"
+    tmp="$(mktemp)"
+
+    {
+        echo "$MARKER_BEGIN"
+        jq -r --arg tool "codex" '
+            .servers
+            | to_entries
+            | map(select(.value.tools | index($tool)))
+            | .[]
+            | "[mcp_servers.\(.key)]",
+              (if .value.config.command then "command = \"\(.value.config.command)\"" else empty end),
+              (if .value.config.args then
+                "args = [" + (.value.config.args | map("\"" + . + "\"") | join(", ")) + "]"
+              else empty end),
+              (if .value.config.url then "url = \"\(.value.config.url)\"" else empty end),
+              ""
+        ' "$SERVERS_JSON"
+        echo "$MARKER_END"
+    } >"$fragment"
+
+    mkdir -p "$(dirname "$codex_config")"
+    if [[ ! -f "$codex_config" ]]; then
+        cp "$fragment" "$codex_config"
+        ok "MCP (codex): created $codex_config"
+        rm -f "$fragment" "$tmp"
+        return
+    fi
+
+    if grep -qF "$MARKER_BEGIN" "$codex_config"; then
+        awk -v begin="$MARKER_BEGIN" -v end="$MARKER_END" '
+            $0 == begin { skip=1; next }
+            $0 == end   { skip=0; next }
+            !skip { print }
+        ' "$codex_config" >"$tmp"
+        cat "$tmp" "$fragment" >"$codex_config"
+    else
+        printf '\n' >>"$codex_config"
+        cat "$fragment" >>"$codex_config"
+    fi
+
+    rm -f "$fragment" "$tmp"
+    ok "MCP (codex): updated managed block in $codex_config"
+}
+
+main() {
+    require_jq
+    load_secrets
+
+    info "Generating MCP configs from $SERVERS_JSON"
+    write_json_mcp cursor "$AI_DIR/.cursor/mcp.json"
+    write_json_mcp claude "$AI_DIR/.claude/mcp.json"
+    write_json_mcp pi     "$AI_DIR/.pi/agent/mcp.json"
+    sync_codex_mcp
+
+    echo ""
+    ok "MCP sync complete"
+}
+
+main "$@"

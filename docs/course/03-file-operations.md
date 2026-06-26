@@ -24,7 +24,7 @@ Expected output (abbreviated):
 
 ```
 ───────┬────────────────────────────────────────
-       │ File: /home/testuser/.config/starship.toml
+       │ File: ~/.config/starship.toml
 ───────┼────────────────────────────────────────
    1   │ format = """
    2   │ $directory\
@@ -76,7 +76,6 @@ Expected output (abbreviated):
  tmux
  zsh
  Brewfile
- Dockerfile
  Makefile
  README.md
 ```
@@ -89,10 +88,9 @@ ll ~/dotfiles
 Expected output (abbreviated):
 
 ```
-drwxr-xr-x   - testuser  2 Apr 12:00  bat
-drwxr-xr-x   - testuser  2 Apr 12:00  git
--rw-r--r-- 1.2k testuser  2 Apr 12:00 N Brewfile
--rw-r--r--  845 testuser  2 Apr 12:00 N Dockerfile
+drwxr-xr-x   - you  2 Apr 12:00  bat
+drwxr-xr-x   - you  2 Apr 12:00  git
+-rw-r--r-- 1.2k you  2 Apr 12:00 N Brewfile
 ```
 
 The `N` column is git status — `N` means new/untracked, `M` means modified.
@@ -138,10 +136,10 @@ fd config ~/dotfiles
 Expected output:
 
 ```
-/home/testuser/dotfiles/atuin/.config/atuin/config.toml
-/home/testuser/dotfiles/bat/.config/bat/config
-/home/testuser/dotfiles/lazygit/.config/lazygit/config.yml
-/home/testuser/dotfiles/mise/.config/mise/config.toml
+~/dotfiles/atuin/.config/atuin/config.toml
+~/dotfiles/bat/.config/bat/config
+~/dotfiles/lazygit/.config/lazygit/config.yml
+~/dotfiles/mise/.config/mise/config.toml
 ```
 
 ```bash
@@ -152,11 +150,11 @@ fd -e toml ~/dotfiles
 Expected output:
 
 ```
-/home/testuser/dotfiles/atuin/.config/atuin/config.toml
-/home/testuser/dotfiles/mise/.config/mise/config.toml
-/home/testuser/dotfiles/starship/.config/starship.toml
-/home/testuser/dotfiles/yazi/.config/yazi/theme.toml
-/home/testuser/dotfiles/yazi/.config/yazi/yazi.toml
+~/dotfiles/atuin/.config/atuin/config.toml
+~/dotfiles/mise/.config/mise/config.toml
+~/dotfiles/starship/.config/starship.toml
+~/dotfiles/yazi/.config/yazi/theme.toml
+~/dotfiles/yazi/.config/yazi/yazi.toml
 ```
 
 ```bash
@@ -185,9 +183,9 @@ fd -e md ~/dotfiles/docs --exec wc -l
 Expected output:
 
 ```
-  42 /home/testuser/dotfiles/docs/course/01-shell-basics.md
-  84 /home/testuser/dotfiles/docs/course/02-the-prompt.md
- 139 /home/testuser/dotfiles/docs/course/03-file-operations.md
+  42 ~/dotfiles/docs/course/01-shell-basics.md
+  84 ~/dotfiles/docs/course/02-the-prompt.md
+ 139 ~/dotfiles/docs/course/03-file-operations.md
   ...
 ```
 
@@ -240,7 +238,7 @@ rg "function" -g "*.zsh" ~/dotfiles
 Expected output (abbreviated):
 
 ```
-/home/testuser/dotfiles/zsh/.config/zsh/50-functions.zsh
+~/dotfiles/zsh/.config/zsh/50-functions.zsh
 1:# Utility functions loaded into every shell session.
   ...
 ```
@@ -253,7 +251,7 @@ rg -c "alias" ~/dotfiles/zsh/.config/zsh/
 Expected output:
 
 ```
-/home/testuser/dotfiles/zsh/.config/zsh/40-aliases.zsh:18
+~/dotfiles/zsh/.config/zsh/40-aliases.zsh:18
 ```
 
 ```bash
@@ -265,8 +263,6 @@ fd -e toml ~/dotfiles | xargs rg "catppuccin"
 ```
 
 ## sd — A Better `sed`
-
-> **Host only** — `sd` is installed via Homebrew on macOS but is **not available in the Docker playground**. These examples work on your host machine after running `make install`.
 
 `sd` replaces `sed` for find-and-replace. The key advantage: **no escaping gymnastics**. Regex is the default, and capture groups use `$1` instead of `\1`.
 
@@ -304,14 +300,14 @@ fd -e zsh ~/dotfiles/zsh/.config/zsh/
 Expected output:
 
 ```
-/home/testuser/dotfiles/zsh/.config/zsh/00-env.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/10-options.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/20-plugins.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/30-completions.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/40-aliases.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/50-functions.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/60-tools.zsh
-/home/testuser/dotfiles/zsh/.config/zsh/70-platform.zsh
+~/dotfiles/zsh/.config/zsh/00-env.zsh
+~/dotfiles/zsh/.config/zsh/10-options.zsh
+~/dotfiles/zsh/.config/zsh/20-plugins.zsh
+~/dotfiles/zsh/.config/zsh/30-completions.zsh
+~/dotfiles/zsh/.config/zsh/40-aliases.zsh
+~/dotfiles/zsh/.config/zsh/50-functions.zsh
+~/dotfiles/zsh/.config/zsh/60-tools.zsh
+~/dotfiles/zsh/.config/zsh/70-platform.zsh
 ```
 
 ```bash
@@ -322,7 +318,7 @@ rg -l "alias" -g "*.zsh" ~/dotfiles/zsh/.config/zsh/
 Expected output:
 
 ```
-/home/testuser/dotfiles/zsh/.config/zsh/40-aliases.zsh
+~/dotfiles/zsh/.config/zsh/40-aliases.zsh
 ```
 
 ```bash
@@ -366,7 +362,7 @@ fd -e toml -e yml ~/dotfiles --exec rg -l "true" {} \; | xargs bat
 | `find . -type d`                     | `fd . -t d`              |                                       |
 | `grep -r "pattern" .`               | `rg "pattern"`           | Parallel, syntax-aware                |
 | `grep -r "pat" --include="*.zsh"`   | `rg "pat" -g "*.zsh"`   | Glob filter (no `-t zsh`)             |
-| `sed -i 's/old/new/g' file`         | `sd "old" "new" file`    | Host only (not in Docker)             |
+| `sed -i 's/old/new/g' file`         | `sd "old" "new" file`    | No escaping gymnastics                |
 
 ## Next
 

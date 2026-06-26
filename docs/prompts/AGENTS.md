@@ -107,7 +107,7 @@ k9s                       # Kubernetes TUI (pods, logs, exec)
 | `cd` (for jumping) | `z` | zoxide learns your frequent directories |
 | `du` | `dust` | disk usage with visual tree, sorted by size |
 | `df` | `duf` | disk free with colors, grouped by filesystem type |
-| `top` / `htop` | `btm` | graphs, filtering, cross-platform |
+| `top` / `htop` | `btm` | graphs, filtering, process search |
 | `ps` | `procs` | tree view, keyword search, colored |
 | `sed` | `sd` | simpler regex syntax, no escaping headaches |
 | `man` (for quick ref) | `tldr` | community examples, just the useful parts |

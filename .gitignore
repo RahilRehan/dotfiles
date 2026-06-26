@@ -4,3 +4,9 @@
 *.swp
 *.swo
 *~
+
+# Machine-specific shell overrides (never commit)
+**/local.zsh
+
+# AI secrets (copy from ai/.config/ai/secrets.env.example)
+.config/ai/secrets.env

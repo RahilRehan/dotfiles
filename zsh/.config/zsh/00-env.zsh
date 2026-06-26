@@ -6,6 +6,9 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
+# AI / MCP secrets (STITCH_API_KEY, etc.) — never commit this file
+[[ -f "$XDG_CONFIG_HOME/ai/secrets.env" ]] && source "$XDG_CONFIG_HOME/ai/secrets.env"
+
 # Default editor — fallback chain for portability
 if command -v cursor &>/dev/null; then
     export EDITOR="cursor --wait"
@@ -20,15 +23,11 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 # Homebrew — must be early so brew-installed tools are on PATH for 60-tools.zsh.
-# Apple Silicon: /opt/homebrew, Intel: /usr/local, Linux: /home/linuxbrew
+# Apple Silicon: /opt/homebrew, Intel: /usr/local
 if [ -f /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [ -f /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv)"
-elif [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-elif [ -d "$HOME/.linuxbrew" ]; then
-    eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
 fi
 
 # typeset -U = deduplicate. Sourcing .zshrc 10 times won't add 10 duplicate entries.

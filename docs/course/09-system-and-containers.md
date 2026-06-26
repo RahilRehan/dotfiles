@@ -1,11 +1,5 @@
 # Lesson 09 — System & Containers
 
-> **Host only — nothing in this lesson works inside the Docker playground.** Every tool here is installed via Homebrew and talks directly to macOS hardware, filesystems, or a running Docker daemon — none of which exist inside the container. Read along to learn what each tool does, then install them on your host:
->
-> ```bash
-> brew bundle --file=~/dotfiles/Brewfile
-> ```
-
 Unix ships utilities like `du`, `df`, and `ps` that haven't changed their output format in decades. A new generation of tools rewrites them with color, bar charts, and interactivity — while keeping the same core purpose. Your dotfiles wire many of these as drop-in aliases so you get the better version without changing habits.
 
 ## Aliases You Already Have
@@ -18,7 +12,7 @@ alias df="duf"        # disk free overview
 alias ps="procs"      # process viewer
 ```
 
-Type `du` on your host and you're running `dust`. Type `ps` and you're running `procs`. Same muscle memory, dramatically better output. Two TUI launchers are also defined:
+Type `du` and you're running `dust`. Type `ps` and you're running `procs`. Same muscle memory, dramatically better output. Two TUI launchers are also defined:
 
 ```bash
 alias lzd="lazydocker"   # Docker TUI
@@ -95,7 +89,7 @@ lzd                       # launch (alias defined in 40-aliases.zsh)
 | `s` / `r` | Stop / restart container |
 | `x` | Context menu for current item |
 
-**Try this:** On your host, start a throwaway container (`docker run -d --name dottest alpine sleep 3600`), then run `lzd`. Navigate to it, press `Enter` for logs, then `d` to remove it — all without typing a single `docker` command.
+**Try this:** Start a throwaway container (`docker run -d --name dottest alpine sleep 3600`), then run `lzd`. Navigate to it, press `Enter` for logs, then `d` to remove it — all without typing a single `docker` command.
 
 ### k9s — Kubernetes TUI
 
