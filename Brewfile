@@ -1,52 +1,44 @@
-# Phase 0: Foundation
+# The tools installed on every machine. Keep this list small.
+
+# Dotfile management and small data helpers
 brew "stow"
-
-# Phase 1: Shell + Prompt
-brew "starship"
-
-# Phase 2: Git
-brew "git-delta"
-brew "lazygit"
-
-# Phase 3: Modern coreutils
 brew "jq"
-brew "bat"
-brew "eza"
-brew "zoxide"
 
-# Phase 4: History + Search
-brew "atuin"
+# Find and move around code
 brew "fzf"
 brew "fd"
 brew "ripgrep"
+brew "zoxide"
 
-# Phase 5: Terminal
-brew "tmux"
-cask "iterm2"
+# Git workflow
+brew "git-delta"
+brew "lazygit"
 
-# Phase 7: File manager
-brew "yazi"
-brew "ffmpegthumbnailer"       # video thumbnail previews in yazi
-brew "poppler"                 # PDF previews in yazi
-
-# Phase 8: Dev environment
+# Project environments
 brew "mise"
 brew "direnv"
+brew "uv"
 
-# Phase 10: Container TUIs
-brew "lazydocker"
-brew "k9s"
+# Prompt and readable file output
+brew "starship"
+brew "bat"
 
-# Phase 11: Extras
-brew "dust"                    # visual disk usage (du replacement)
-brew "duf"                     # disk free (df replacement)
-brew "bottom"                  # system monitor (top/htop replacement)
-brew "procs"                   # process viewer (ps replacement)
-brew "sd"                      # find-and-replace (sed replacement)
-brew "tldr"                    # simplified man pages
-brew "just"                    # command runner (make replacement)
-brew "glow"                    # terminal markdown renderer
-brew "hyperfine"               # CLI benchmarking tool
+# Interactive shell feedback
+brew "zsh-syntax-highlighting"
 
-# Fonts
-cask "font-meslo-lg-nerd-font"
+# Micro preview plugin dependency
+brew "pandoc"
+
+# AI coding harnesses
+cask "codex"
+cask "claude-code"
+cask "cursor"
+cask "cursor-cli"
+
+# Daily desktop applications
+cask "docker-desktop"
+cask "iterm2"
+cask "obsidian"
+cask "slack"
+cask "localsend"
+cask "google-chrome"

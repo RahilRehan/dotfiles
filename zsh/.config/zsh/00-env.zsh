@@ -6,7 +6,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
-# AI / MCP secrets (STITCH_API_KEY, etc.) — never commit this file
+# Optional AI / MCP secrets — never commit this file
 [[ -f "$XDG_CONFIG_HOME/ai/secrets.env" ]] && source "$XDG_CONFIG_HOME/ai/secrets.env"
 
 # Default editor — fallback chain for portability

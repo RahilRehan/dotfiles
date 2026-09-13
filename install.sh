@@ -19,7 +19,16 @@ install_packages() {
 
 backup_existing() {
     local backup_dir="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
-    local files=(".zshrc" ".gitconfig" ".tmux.conf")
+    # Only back up paths managed by the small default package set. This lets
+    # Stow create links without overwriting an existing personal setup.
+    local files=(
+        ".zshrc"
+        ".gitconfig"
+        ".config/zsh"
+        ".config/starship.toml"
+        ".config/bat"
+        ".config/git/ignore"
+    )
 
     for f in "${files[@]}"; do
         if [ -e "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
@@ -31,13 +40,28 @@ backup_existing() {
 }
 
 stow_packages() {
+    local packages=(zsh starship git bat mise micro)
     cd "$DOTFILES_DIR"
-    for dir in */; do
-        dir="${dir%/}"
-        [[ "$dir" == .git || "$dir" == docs || "$dir" == iterm2 || "$dir" == ai ]] && continue
-        stow --restow --target="$HOME" "$dir"
-        success "Stowed $dir"
+    for package in "${packages[@]}"; do
+        stow --restow --target="$HOME" "$package"
+        success "Stowed $package"
     done
+}
+
+install_micro_plugin() {
+    if command -v micro &>/dev/null && [ ! -d "$HOME/.config/micro/plug/preview" ]; then
+        micro -plugin install preview
+        success "Installed Micro preview plugin"
+    fi
+}
+
+install_ai_config() {
+    if command -v jq &>/dev/null; then
+        bash "$DOTFILES_DIR/ai/bin/ai-sync"
+        success "Linked AI harness configuration"
+    else
+        warn "jq is unavailable — skipping AI harness configuration"
+    fi
 }
 
 setup_shell() {
@@ -87,34 +111,6 @@ _setup_git_identity() {
     success "Git $label identity saved to $file"
 }
 
-setup_iterm2() {
-    local target_dir="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-    local target="$target_dir/dotfiles.json"
-    if [ -L "$target" ] || [ -f "$target" ]; then
-        success "iTerm2 profile already linked"
-        return
-    fi
-    mkdir -p "$target_dir"
-    ln -s "$DOTFILES_DIR/iterm2/profile.json" "$target"
-    success "iTerm2 profile linked"
-    warn "Open iTerm2 → Settings → Profiles → Keys → Presets → Natural Text Editing"
-}
-
-setup_ai() {
-    bash "$DOTFILES_DIR/ai/bin/ai-sync"
-
-    local rel
-    for rel in .cursor/mcp.json .claude/mcp.json .pi/agent/mcp.json; do
-        if [[ -f "$HOME/$rel" && ! -L "$HOME/$rel" ]]; then
-            rm "$HOME/$rel"
-            success "Replaced ~/$rel with stowed config"
-        fi
-    done
-
-    cd "$DOTFILES_DIR" && stow --restow --target="$HOME" ai
-    success "AI MCP synced"
-}
-
 main() {
     if [[ "$(uname -s)" != "Darwin" ]]; then
         echo "This dotfiles repo supports macOS only." >&2
@@ -126,11 +122,11 @@ main() {
     install_packages
     mkdir -p "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/state/zsh"
     backup_existing
-    setup_ai
     stow_packages
+    install_micro_plugin
+    install_ai_config
     setup_shell
     setup_git_user
-    setup_iterm2
 
     echo ""
     success "Done! Run: exec zsh"

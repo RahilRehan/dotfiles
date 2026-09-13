@@ -1,112 +1,102 @@
 #!/usr/bin/env bash
-# Generate per-tool MCP configs from ai/mcp/servers.json
+# Generate MCP configuration from ai/mcp/servers.json.
+# The registry is the only file to edit; generated files are disposable.
 set -euo pipefail
 
 AI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVERS_JSON="$AI_DIR/mcp/servers.json"
-SECRETS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/ai/secrets.env"
-
 MARKER_BEGIN="# BEGIN dotfiles-ai-mcp"
 MARKER_END="# END dotfiles-ai-mcp"
 
-info()  { echo -e "\033[0;34m::\033[0m $1" >&2; }
-ok()    { echo -e "\033[0;32mok\033[0m $1" >&2; }
-
 require_jq() {
-    command -v jq &>/dev/null || {
+    command -v jq >/dev/null 2>&1 || {
         echo "ai-sync requires jq (brew install jq)" >&2
         exit 1
     }
 }
 
-load_secrets() {
-    if [[ -f "$SECRETS_FILE" ]]; then
-        # shellcheck disable=SC1090
-        set -a && source "$SECRETS_FILE" && set +a
-        ok "Loaded secrets from $SECRETS_FILE"
-    fi
-}
-
-build_mcp_json() {
+build_json() {
     local tool="$1"
     jq -c --arg tool "$tool" '
-        { mcpServers: (
+        {mcpServers: (
             .servers
             | to_entries
-            | map(select(.value.tools | index($tool)))
-            | map({ key: .key, value: .value.config })
+            | map(select((.value.tools // []) | index($tool)))
+            | map({key: .key, value: .value.config})
             | from_entries
         )}
     ' "$SERVERS_JSON"
 }
 
-write_json_mcp() {
-    local tool="$1" dest="$2"
-    mkdir -p "$(dirname "$dest")"
-    build_mcp_json "$tool" | jq '.' >"$dest"
-    ok "MCP ($tool): $dest"
+write_json() {
+    local tool="$1" destination="$2"
+    mkdir -p "$(dirname "$destination")"
+    build_json "$tool" | jq '.' > "$destination"
+    echo "MCP ($tool): $destination"
 }
 
-sync_codex_mcp() {
-    local codex_config="$HOME/.codex/config.toml"
-    local fragment tmp
+link_agent_json() {
+    local source="$1" destination="$2"
+    mkdir -p "$(dirname "$destination")"
+    if [[ -e "$destination" && ! -L "$destination" ]]; then
+        echo "MCP: refusing to replace existing $destination; generated file is at $source" >&2
+        return
+    fi
+    ln -sfn "$source" "$destination"
+}
+
+sync_codex() {
+    local destination="$HOME/.codex/config.toml"
+    local fragment temporary
     fragment="$(mktemp)"
-    tmp="$(mktemp)"
+    temporary="$(mktemp)"
 
     {
         echo "$MARKER_BEGIN"
-        jq -r --arg tool "codex" '
+        jq -r --arg tool codex '
             .servers
             | to_entries
-            | map(select(.value.tools | index($tool)))
+            | map(select((.value.tools // []) | index($tool)))
             | .[]
             | "[mcp_servers.\(.key)]",
               (if .value.config.command then "command = \"\(.value.config.command)\"" else empty end),
-              (if .value.config.args then
-                "args = [" + (.value.config.args | map("\"" + . + "\"") | join(", ")) + "]"
-              else empty end),
+              (if .value.config.args then "args = [" + (.value.config.args | map("\"" + . + "\"") | join(", ")) + "]" else empty end),
               (if .value.config.url then "url = \"\(.value.config.url)\"" else empty end),
               ""
         ' "$SERVERS_JSON"
         echo "$MARKER_END"
-    } >"$fragment"
+    } > "$fragment"
 
-    mkdir -p "$(dirname "$codex_config")"
-    if [[ ! -f "$codex_config" ]]; then
-        cp "$fragment" "$codex_config"
-        ok "MCP (codex): created $codex_config"
-        rm -f "$fragment" "$tmp"
-        return
-    fi
-
-    if grep -qF "$MARKER_BEGIN" "$codex_config"; then
-        awk -v begin="$MARKER_BEGIN" -v end="$MARKER_END" '
-            $0 == begin { skip=1; next }
-            $0 == end   { skip=0; next }
-            !skip { print }
-        ' "$codex_config" >"$tmp"
-        cat "$tmp" "$fragment" >"$codex_config"
+    mkdir -p "$(dirname "$destination")"
+    if [[ -f "$destination" ]]; then
+        # Remove the current managed block and legacy stanzas from older
+        # versions of this repository.
+        awk '
+            $0 == "# BEGIN dotfiles-ai-mcp" { managed=1; next }
+            $0 == "# END dotfiles-ai-mcp" { managed=0; next }
+            /^\[mcp_servers\.(stitch|aws-mcp)\]$/ { legacy=1; next }
+            /^\[/ { legacy=0 }
+            !managed && !legacy { print }
+        ' "$destination" > "$temporary"
+        mv "$temporary" "$destination"
     else
-        printf '\n' >>"$codex_config"
-        cat "$fragment" >>"$codex_config"
+        : > "$destination"
     fi
 
-    rm -f "$fragment" "$tmp"
-    ok "MCP (codex): updated managed block in $codex_config"
+    printf '\n%s\n' "$(cat "$fragment")" >> "$destination"
+    rm -f "$fragment" "$temporary"
+    echo "MCP (codex): $destination"
 }
 
 main() {
     require_jq
-    load_secrets
-
-    info "Generating MCP configs from $SERVERS_JSON"
-    write_json_mcp cursor "$AI_DIR/.cursor/mcp.json"
-    write_json_mcp claude "$AI_DIR/.claude/mcp.json"
-    write_json_mcp pi     "$AI_DIR/.pi/agent/mcp.json"
-    sync_codex_mcp
-
-    echo ""
-    ok "MCP sync complete"
+    echo "Generating MCP configs from $SERVERS_JSON"
+    write_json cursor "$AI_DIR/.cursor/mcp.json"
+    write_json claude "$AI_DIR/.claude/mcp.json"
+    link_agent_json "$AI_DIR/.cursor/mcp.json" "$HOME/.cursor/mcp.json"
+    link_agent_json "$AI_DIR/.claude/mcp.json" "$HOME/.claude/mcp.json"
+    sync_codex
+    echo "MCP sync complete"
 }
 
 main "$@"

@@ -37,3 +37,5 @@ vendor/         # Go
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+**/.claude/settings.local.json

@@ -1,7 +1,6 @@
-# Completion system — makes tab-completion smarter and prettier
-#
-# This runs after zinit loads zsh-completions (20-plugins.zsh),
-# so all community completions are available.
+# Use zsh's built-in completion system. No plugin manager is required.
+autoload -Uz compinit
+compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
 
 # Case-insensitive matching: "doc<tab>" matches "Documents"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'

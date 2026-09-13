@@ -1,7 +1,4 @@
-# mise global config — default toolchain
-# Project-level .mise.toml files override these.
-# https://mise.jdx.dev/configuration.html
-
+# A dependable Node baseline for ad-hoc `npx` commands. Individual projects
+# can override it in their own mise.toml or .mise.toml.
 [tools]
 node = "lts"
-python = "3.12"

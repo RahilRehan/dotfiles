@@ -1,6 +1,5 @@
-# Tool integrations — each tool's shell hook goes here.
-# Only activates if the tool is installed (command -v check).
-# New tools get added here in future phases.
+# Shell integrations for the core tools. Each remains optional, so a shell
+# still opens if a tool is missing.
 
 # --- zoxide (smart cd) ---
 # Learns your most-visited directories. "z proj" jumps to ~/code/my-project.
@@ -9,16 +8,8 @@ if command -v zoxide &>/dev/null; then
     eval "$(zoxide init zsh)"
 fi
 
-# --- atuin (shell history) ---
-# Replaces ctrl-r with a full-screen fuzzy history search.
-# Stores history in SQLite with context (directory, exit code, duration).
-# --disable-up-arrow: keep ↑ for normal history, ctrl-r for atuin.
-if command -v atuin &>/dev/null; then
-    eval "$(atuin init zsh --disable-up-arrow)"
-fi
-
 # --- fzf (fuzzy finder) ---
-# ctrl-t = find file, alt-c = find directory, ctrl-r = history (if atuin not installed)
+# ctrl-t = find file, alt-c = find directory, ctrl-r = history
 # Uses fd as backend (fast, respects .gitignore) and bat for previews.
 if command -v fzf &>/dev/null; then
     if fzf --zsh &>/dev/null; then
@@ -34,6 +25,10 @@ if command -v fzf &>/dev/null; then
         source /usr/share/fzf/completion.zsh
     fi
 
+    # Keep Tab as normal zsh completion. fzf remains available through
+    # Ctrl-T, Alt-C, and Ctrl-R without replacing the standard completion menu.
+    bindkey '^I' expand-or-complete
+
     # Use fd instead of find (faster, respects .gitignore)
     if command -v fd &>/dev/null; then
         export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
@@ -41,7 +36,7 @@ if command -v fzf &>/dev/null; then
         export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
     fi
 
-    # Catppuccin Macchiato colors + bat preview for ctrl-t + eza preview for alt-c
+    # Preview files with bat. Ctrl-/ toggles the preview.
     export FZF_DEFAULT_OPTS="
         --height=60%
         --layout=reverse
@@ -54,7 +49,7 @@ if command -v fzf &>/dev/null; then
         --color=selected-bg:#494d64
     "
     export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :300 {} 2>/dev/null || cat {}'"
-    export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons {} 2>/dev/null || ls {}'"
+    export FZF_ALT_C_OPTS="--preview 'ls -la {}'"
 fi
 
 # --- mise (polyglot runtime manager) ---
@@ -69,21 +64,6 @@ fi
 # when you cd into a project, and unloads them when you leave.
 if command -v direnv &>/dev/null; then
     eval "$(direnv hook zsh)"
-fi
-
-# --- yazi (file manager) ---
-# Wrapper function: when you quit yazi (q), your shell cd's to wherever you navigated.
-# Without this, quitting yazi leaves you in your original directory.
-if command -v yazi &>/dev/null; then
-    function y() {
-        local tmp
-        tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-        yazi "$@" --cwd-file="$tmp"
-        if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-            builtin cd -- "$cwd"
-        fi
-        rm -f -- "$tmp"
-    }
 fi
 
 # --- Starship prompt (must be last — it wraps the prompt) ---
