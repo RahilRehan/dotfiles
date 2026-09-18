@@ -1,0 +1,99 @@
+# Accounts followed for company and product news.
+name: companies
+accounts:
+  - name: Google AI
+    handle: GoogleAI
+  - name: Claude
+    handle: claudeai
+  - name: Google Gemini
+    handle: GeminiApp
+  - name: Grok
+    handle: grok
+  - name: DeepSeek
+    handle: deepseek_ai
+  - name: Mistral AI
+    handle: MistralAI
+  - name: SpaceXAI
+    handle: SpaceXAI
+  - name: Anthropic
+    handle: AnthropicAI
+  - name: AI at Meta
+    handle: AIatMeta
+  - name: Hugging Face
+    handle: huggingface
+  - name: Google DeepMind
+    handle: GoogleDeepMind
+  - name: OpenAI
+    handle: OpenAI
+  - name: Apple
+    handle: Apple
+  - name: CrowdStrike
+    handle: CrowdStrike
+  - name: Microsoft
+    handle: Microsoft
+  - name: Amazon Web Services
+    handle: awscloud
+  - name: NVIDIA
+    handle: nvidia
+  - name: Cloudflare
+    handle: Cloudflare
+  - name: Google
+    handle: Google
+  - name: Microsoft Azure
+    handle: Azure
+  - name: GitHub
+    handle: github
+  - name: Tesla
+    handle: Tesla
+  - name: Meta
+    handle: Meta
+
+search_batches:
+  - [GoogleAI, claudeai, GeminiApp, grok, deepseek_ai, MistralAI, SpaceXAI, AnthropicAI]
+  - [AIatMeta, huggingface, GoogleDeepMind, OpenAI, Apple, CrowdStrike, Microsoft, awscloud]
+  - [nvidia, Cloudflare, Google, Azure, github, Tesla, Meta]
+
+# Personalization hints for the future x-news-digest skill.
+priorities:
+  - startup opportunities and real customer problems
+  - product launches, business models, funding, partnerships, and acquisitions
+  - low-level engineering and infrastructure details
+  - high-level architecture and system design tradeoffs
+  - practical developer tools and open-source technology
+  - reality-versus-hype analysis for technology content
+  - ideas that could become useful Instagram videos
+  - developments relevant to software-engineering career resilience
+
+digest_policy:
+  keep:
+    - new product, model, or platform launches
+    - major technical announcements
+    - important research papers or benchmarks
+    - funding, acquisitions, partnerships, or leadership changes
+    - pricing, API, policy, or developer-platform changes
+    - security incidents or outages
+    - regulatory or market news
+    - announcements likely to affect developers, businesses, or Rahil's work
+    - strong technical discussions or meaningful reactions
+  ignore:
+    - routine reposts
+    - generic marketing slogans
+    - hiring posts unless strategically important
+    - customer-support replies
+    - conference reminders without new information
+    - repeated announcements across multiple accounts
+    - engagement bait and vague inspirational posts
+    - minor product updates with no practical impact
+  output:
+    max_items: 5
+    sections: [Top developments, Worth watching, Content ideas for me]
+    item_fields: [Headline, Account, Published date/time in IST, Source type, What happened, Why it matters in India, Direct X link, Content angle for you]
+  quality_rules:
+    - prefer original posts over reposts
+    - deduplicate the same announcement across company accounts
+    - treat claims as claims unless independently verified
+    - label Hermes interpretation separately from the source statement
+    - if nothing meaningful happened, say so instead of filling the digest
+    - preserve published dates and times; never invent missing timestamps
+    - prefer implications for Indian developers, startups, and technology audiences
+    - keep the digest compact and report the exact coverage window

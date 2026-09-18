@@ -40,12 +40,31 @@ backup_existing() {
 }
 
 stow_packages() {
-    local packages=(zsh starship git bat mise micro)
-    cd "$DOTFILES_DIR"
-    for package in "${packages[@]}"; do
-        stow --restow --target="$HOME" "$package"
-        success "Stowed $package"
-    done
+	local packages=(zsh starship git bat mise micro)
+	cd "$DOTFILES_DIR"
+	for package in "${packages[@]}"; do
+		stow --restow --target="$HOME" "$package"
+		success "Stowed $package"
+	done
+}
+
+link_hermes() {
+	if [[ -e "$HOME/.hermes" && ! -L "$HOME/.hermes" ]]; then
+		warn "Refusing to replace existing real $HOME/.hermes"
+		return
+	fi
+	ln -sfn "$DOTFILES_DIR/hermes/.hermes" "$HOME/.hermes"
+	success "Linked native Hermes home"
+}
+
+install_hermes() {
+	if command -v hermes &>/dev/null; then
+		success "Hermes Agent already installed"
+		return
+	fi
+	info "Installing Hermes Agent with the official installer..."
+	curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+	success "Hermes Agent installed"
 }
 
 install_micro_plugin() {
@@ -123,6 +142,8 @@ main() {
     mkdir -p "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/state/zsh"
     backup_existing
     stow_packages
+    link_hermes
+    install_hermes
     install_micro_plugin
     install_ai_config
     setup_shell

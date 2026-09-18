@@ -1,0 +1,272 @@
+{
+  "jobs": [
+    {
+      "id": "f20fc6ed7945",
+      "name": "Daily X companies news",
+      "prompt": "Run the companies X news digest for the last 24 hours. Start with the standalone Slack header `📰 *X NEWS* · DD Mon YYYY · `Asia/Kolkata`` and a divider, then use the compact India-focused format, preserve exact published dates and times in IST, include direct X links, and add content ideas for Rahil. Keep all news content in this top-level message and ask for news follow-ups in its thread. Do not post or take any action on X.",
+      "skills": [
+        "x-news-digest"
+      ],
+      "skill": "x-news-digest",
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "anthropic",
+      "model_snapshot": "claude-sonnet-5",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 6 * * *",
+        "display": "30 6 * * *"
+      },
+      "schedule_display": "30 6 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 5
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-09-13T14:08:44.637258+05:30",
+      "next_run_at": "2026-09-19T06:30:00+05:30",
+      "last_run_at": "2026-09-18T06:48:28.074116+05:30",
+      "last_status": "blocked_config",
+      "last_error": "[blocked_config] provider credential missing: No Anthropic credentials found. Set ANTHROPIC_TOKEN or ANTHROPIC_API_KEY, run 'claude setup-token', or authenticate with 'claude /login'.. Set the provider API key in .env (or `hermes setup`), or pin a working provider via `hermes cron edit f20fc6ed7945 --provider <p>`.",
+      "last_delivery_error": "live adapter send failed: The request to the Slack API failed. (url: https://slack.com/api/chat.postMessage, status: 200)\nThe server responded with: {'ok': False, 'error': 'not_in_channel'}; live adapter delivery to slack:C0C20J9N604 failed: The request to the Slack API failed. (url: https://slack.com/api/chat.postMessage, status: 200)\nThe server responded with: {'ok': False, 'error': 'not_in_channel'}; delivery error: Adapter send failed: The request to the Slack API failed. (url: https://slack.com/api/chat.postMessage, status: 200)\nThe server responded with: {'ok': False, 'error': 'not_in_channel'} (target slack:C0C20J9N604)",
+      "failure_streak": 2,
+      "deliver": "slack:C0C20J9N604",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null,
+      "last_dispatch": {
+        "scheduled_at": "2026-09-18T06:30:00+05:30",
+        "dispatched_at": "2026-09-18T06:48:24.194375+05:30",
+        "lateness_seconds": 1104.2,
+        "kind": "late"
+      },
+      "preflight_alerted": true
+    },
+    {
+      "id": "3c66f0642dc6",
+      "name": "Daily communication practice",
+      "prompt": "Proactively start Rahil's daily communication practice at the scheduled time; do not wait for him to ask. Start with `💬 *COMMUNICATION* · DD Mon YYYY · `Asia/Kolkata`` and a divider. Choose one primary mode among writing, speaking, reading, listening, or public-speaking practice, and vary broad topics across general knowledge, current affairs, technology, work, and personal growth. Send only a compact kickoff card: topic and why it matters, audience, purpose, one communication target, time or word limit, five-minute preparation, one primary exercise, one memory cue, and a clear Done when condition. Give enough context to form a view but do not teach a long lesson or write the answer. Ask Rahil to reply in this same thread. Do not give corrections before his attempt and do not claim a reply, rating, or progress was persisted unless the write was verified.",
+      "skills": [
+        "communication-coach"
+      ],
+      "skill": "communication-coach",
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "anthropic",
+      "model_snapshot": "claude-sonnet-5",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "50 6 * * *",
+        "display": "50 6 * * *"
+      },
+      "schedule_display": "50 6 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 5
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-09-13T17:56:59.887201+05:30",
+      "next_run_at": "2026-09-19T06:50:00+05:30",
+      "last_run_at": "2026-09-18T07:09:23.495340+05:30",
+      "last_status": "blocked_config",
+      "last_error": "[blocked_config] provider credential missing: No Anthropic credentials found. Set ANTHROPIC_TOKEN or ANTHROPIC_API_KEY, run 'claude setup-token', or authenticate with 'claude /login'.. Set the provider API key in .env (or `hermes setup`), or pin a working provider via `hermes cron edit 3c66f0642dc6 --provider <p>`.",
+      "last_delivery_error": null,
+      "failure_streak": 1,
+      "deliver": "slack:C0C1JU79PA5",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null,
+      "last_dispatch": {
+        "scheduled_at": "2026-09-18T06:50:00+05:30",
+        "dispatched_at": "2026-09-18T07:09:21.892801+05:30",
+        "lateness_seconds": 1161.9,
+        "kind": "late"
+      },
+      "preflight_alerted": true
+    },
+    {
+      "id": "8783d0b3194d",
+      "name": "Daily problem solving",
+      "prompt": "Proactively start Rahil's daily DSA problem-solving block in this channel, capped at 75 minutes. Use the shared learning ledger: due reviews first, then new items according to exploration_level; do not repeat not-due items. Pace against the five-month first pass of 19 items per week across six study days; this is a weekly target, not a rigid daily quota. Start with `🧩 *PROBLEM SOLVING* · DD Mon YYYY · `Asia/Kolkata`` and a divider. Select one primary problem and at most one short follow-up or review if time allows. Send a concise kickoff only: platform, exact label, difficulty with source or estimated provenance, status, time, one goal, a coach lens, three things to explore, and three questions for Rahil. Do not reveal the pattern, recurrence, algorithm, solution, or a long explanation before his attempt. Ask him to reply in this same thread, then coach with one focused question or hint at a time. After the core idea is understood, add one connected real-world engineering use case and an optional 5-15 minute mini-component or test only if time remains. Ask separately for rating (again/hard/good/easy) and outcome (attempted/solved/understood/recalled/mastered). Never print undefined, invent constraints or URLs, or claim the ledger changed without verified persistence.",
+      "skills": [
+        "spaced-repetition",
+        "dsa-coach"
+      ],
+      "skill": "spaced-repetition",
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "anthropic",
+      "model_snapshot": "claude-sonnet-5",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 7 * * *",
+        "display": "15 7 * * *"
+      },
+      "schedule_display": "15 7 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 5
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-09-13T17:57:02.877980+05:30",
+      "next_run_at": "2026-09-19T07:15:00+05:30",
+      "last_run_at": "2026-09-18T07:18:57.939544+05:30",
+      "last_status": "blocked_config",
+      "last_error": "[blocked_config] provider credential missing: No Anthropic credentials found. Set ANTHROPIC_TOKEN or ANTHROPIC_API_KEY, run 'claude setup-token', or authenticate with 'claude /login'.. Set the provider API key in .env (or `hermes setup`), or pin a working provider via `hermes cron edit 8783d0b3194d --provider <p>`.",
+      "last_delivery_error": null,
+      "failure_streak": 1,
+      "deliver": "slack:C0C11K36K1D",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null,
+      "last_dispatch": {
+        "scheduled_at": "2026-09-18T07:15:00+05:30",
+        "dispatched_at": "2026-09-18T07:18:56.330743+05:30",
+        "lateness_seconds": 236.3,
+        "kind": "on_time"
+      },
+      "preflight_alerted": true
+    },
+    {
+      "id": "a060fa27ff61",
+      "name": "Daily system design",
+      "prompt": "Proactively start Rahil's daily 60-minute system-design block in this channel. Use the shared learning ledger: due reviews first, then new items according to exploration_level. Prefer Hello Interview fundamentals first, then Fanout expansion, and preserve the source. Start with `🏛️ *SYSTEM DESIGN* · DD Mon YYYY · `Asia/Kolkata`` and a divider. Select one primary concept or design question and at most one short follow-up if time permits. Send a concise kickoff only: source, topic, status, time, one goal, a design lens, three things to explore, and three questions for Rahil. Do not provide a model architecture or long lecture before his attempt. Ask him to reply in this same thread, then guide one layer at a time through requirements, scale, data flow, failures, and trade-offs. After the core idea is understood, add one real product or company use case, one related interview problem, and an optional 10-20 minute mini-component exercise. Research and cite current company claims when needed, and separate facts from inference. Do not claim the ledger changed without verified persistence.",
+      "skills": [
+        "spaced-repetition",
+        "system-design-coach"
+      ],
+      "skill": "spaced-repetition",
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "anthropic",
+      "model_snapshot": "claude-sonnet-5",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "25 8 * * *",
+        "display": "25 8 * * *"
+      },
+      "schedule_display": "25 8 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 5
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-09-13T17:57:05.593621+05:30",
+      "next_run_at": "2026-09-19T08:25:00+05:30",
+      "last_run_at": "2026-09-18T08:26:38.983914+05:30",
+      "last_status": "blocked_config",
+      "last_error": "[blocked_config] provider credential missing: No Anthropic credentials found. Set ANTHROPIC_TOKEN or ANTHROPIC_API_KEY, run 'claude setup-token', or authenticate with 'claude /login'.. Set the provider API key in .env (or `hermes setup`), or pin a working provider via `hermes cron edit a060fa27ff61 --provider <p>`.",
+      "last_delivery_error": null,
+      "failure_streak": 2,
+      "deliver": "slack:C0C1LL1B0QL",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null,
+      "last_dispatch": {
+        "scheduled_at": "2026-09-18T08:25:00+05:30",
+        "dispatched_at": "2026-09-18T08:26:35.273720+05:30",
+        "lateness_seconds": 95.3,
+        "kind": "on_time"
+      },
+      "preflight_alerted": true
+    },
+    {
+      "id": "5b3d2fba9c5e",
+      "name": "Daily building block",
+      "prompt": "Proactively start Rahil's daily 60-minute building block. Start with `🏗️ *BUILDING* · DD Mon YYYY · `Asia/Kolkata`` and a divider. Use the active personal-agent roadmap under ~/.hermes/docs/personal-agent-roadmap.md as the current building backlog when available. Select exactly one smallest concrete outcome that can be completed in 60 minutes. Show: outcome, why it matters to Rahil's larger personal-agent/startup/content goals, first 10-minute action, remaining steps, Done when condition, and one blocker or decision if needed. Do not combine this with news or another workflow, invent a completed project, execute changes, or ask Rahil to request a building task. Ask him to reply in this same thread with completion or a blocker.",
+      "skills": [
+        "daily-guide"
+      ],
+      "skill": "daily-guide",
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "anthropic",
+      "model_snapshot": "claude-sonnet-5",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 9 * * *",
+        "display": "30 9 * * *"
+      },
+      "schedule_display": "30 9 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 5
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-09-13T17:57:08.117248+05:30",
+      "next_run_at": "2026-09-19T09:30:00+05:30",
+      "last_run_at": "2026-09-18T09:45:37.188266+05:30",
+      "last_status": "blocked_config",
+      "last_error": "[blocked_config] provider credential missing: No Anthropic credentials found. Set ANTHROPIC_TOKEN or ANTHROPIC_API_KEY, run 'claude setup-token', or authenticate with 'claude /login'.. Set the provider API key in .env (or `hermes setup`), or pin a working provider via `hermes cron edit 5b3d2fba9c5e --provider <p>`.",
+      "last_delivery_error": null,
+      "failure_streak": 2,
+      "deliver": "slack:C0C1FDGBCF9",
+      "origin": null,
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null,
+      "last_dispatch": {
+        "scheduled_at": "2026-09-18T09:30:00+05:30",
+        "dispatched_at": "2026-09-18T09:45:33.554227+05:30",
+        "lateness_seconds": 933.6,
+        "kind": "late"
+      },
+      "preflight_alerted": true
+    }
+  ],
+  "updated_at": "2026-09-18T09:45:37.191307+05:30"
+}

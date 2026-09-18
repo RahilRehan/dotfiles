@@ -15,6 +15,10 @@ These are already declared in `Brewfile`:
 | Cursor desktop | `cursor` | Editor and desktop harness |
 | Cursor terminal agent | `cursor-cli` | `cursor-agent` command |
 
+Hermes Agent is managed through the official native installer from the
+dotfiles workflow (`make hermes-install`), not Homebrew. Its editable settings
+and ignored runtime home are managed by the `hermes/` package.
+
 The AI MCP source is [`../ai/mcp/servers.json`](../ai/mcp/servers.json). Run
 `make ai-sync` after changing it. The generated Cursor and Claude files are
 linked into their home directories; Codex receives a marked block in its
@@ -56,6 +60,7 @@ copy and a Homebrew cask for the same application.
 brew bundle --file=Brewfile
 make stow
 make ai-sync
+make hermes
 ```
 
 The commands restore packages and links. Sign-ins, project data, extensions,

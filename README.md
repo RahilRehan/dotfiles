@@ -47,10 +47,17 @@ git/       Git defaults and global ignore file
 bat/       readable file output theme
 mise/      project runtime defaults (currently Node LTS)
 micro/     Micro editor settings and preview plugin repository
-ai/        optional skills and MCP source files
+ai/        optional skills, MCP source files, and AI tool documentation
+hermes/    native Hermes configuration, skills, schedules, and ignored state
 ```
 
 Add an optional tool back only after it solves a repeated problem for you.
+
+Hermes is managed as a dotfiles package. `make hermes` creates one atomic link
+from `~/.hermes` to the package; keeping the complete Hermes home together is
+important because it contains both editable sources and runtime state. Runtime
+state is ignored by Git. Keep credentials in `hermes/.hermes/.env`, and never
+commit that file, OAuth state, sessions, databases, logs, or caches.
 
 ## Git identity
 

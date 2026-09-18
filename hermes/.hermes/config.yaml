@@ -1,0 +1,183 @@
+model:
+  provider: anthropic
+  default: claude-sonnet-5
+agent:
+  max_turns: 50
+  verbose: false
+  reasoning_effort: medium
+display:
+  compact: false
+  busy_input_mode: interrupt
+  bell_on_complete: false
+  show_reasoning: false
+  streaming: true
+  interim_assistant_messages: true
+  tool_progress: all
+streaming:
+  enabled: true
+  transport: auto
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+terminal:
+  backend: local
+  home_mode: auto
+  cwd: /Users/rahil
+timezone: Asia/Kolkata
+cron:
+  wrap_response: false
+x_search:
+  model: grok-4.5
+  reasoning_effort: low
+  timeout_seconds: 90
+  retries: 0
+slack:
+  unauthorized_dm_behavior: ignore
+  require_mention: false
+  strict_mention: false
+  thread_require_mention: false
+  free_response_channels:
+    - C0BPT40TW6P
+    - C0C1JU79PA5
+    - C0C1LL1B0QL
+    - C0C11K36K1D
+    - C0C1FDGBCF9
+    - C0C1G2G3DP1
+    - C0C20J9N604
+  channel_prompts:
+    C0C20J9N604: |
+      This is Rahil's news channel. Use it for the daily news digest and related
+      discussion. Prefer meaningful, current items from X and later approved
+      sources such as websites or YouTube. Keep the digest separate from learning
+      and personal-growth planning, and include dates, source links, why an item
+      matters, and useful content angles when relevant.
+    C0C1JU79PA5: |
+      This is Rahil's communication-coach channel. Use it for English writing,
+      grammar, vocabulary, reading, listening, speaking, public-speaking, and
+      influence practice. Coach actively: give a small exercise or prompt, let
+      Rahil respond, then give specific feedback and one focused improvement.
+      Do not turn this into a DSA or system-design lesson unless Rahil explicitly
+      asks for that connection.
+    C0C11K36K1D: |
+      This is Rahil's problem-solving and DSA channel. Use the maintained DSA
+      curriculum and its spaced-repetition state. Start interactively with a
+      compact problem-solving prompt, questions to explore, and one or two things
+      to keep in mind; expand only after Rahil responds. Teach patterns and
+      reasoning, not memorized solutions, and connect problems to practical
+      engineering when useful.
+    C0C1LL1B0QL: |
+      This is Rahil's system-design channel. Use the maintained system-design
+      curriculum and its spaced-repetition state. Start with a compact interactive
+      exploration prompt, then deepen after Rahil responds. Teach mechanisms,
+      trade-offs, failure modes, and real-world company or product analogies.
+      Keep this channel distinct from DSA and general life planning.
+    C0C1FDGBCF9: |
+      This is Rahil's building channel. Use it for startup work, product ideas,
+      content creation, experiments, implementation planning, and the next
+      concrete build action. Keep plans practical and biased toward shipped
+      evidence. Do not duplicate the news digest or learning-coach sessions
+      unless Rahil explicitly connects them to a build.
+    C0C1G2G3DP1: |
+      This is Rahil's improvement and personal-growth channel. It is the home for
+      the broader Personal Growth & Life Agent: personal recall, book insights and
+      motivation, health and exercise habits, finances, vehicle and life-admin
+      reminders, reflection, and choosing the next useful action. Do not duplicate
+      the dedicated communication, DSA, system-design, news, or building channels.
+      Use active recall and spaced repetition for personal experiences and ideas,
+      but only store durable information when Rahil clearly asks or the intent is
+      unmistakable. Be proactive, specific, and compact enough to act on.
+  channel_skill_bindings:
+    - id: C0C20J9N604
+      skills:
+        - x-news-digest
+    - id: C0C1JU79PA5
+      skills:
+        - communication-coach
+    - id: C0C11K36K1D
+      skills:
+        - dsa-coach
+    - id: C0C1LL1B0QL
+      skills:
+        - system-design-coach
+    - id: C0C1G2G3DP1
+      skills:
+        - personal-recall
+        - growth-insights
+approvals:
+  mode: 'off'
+  cron_mode: deny
+  unattended_mode: deny
+session_reset:
+  mode: none
+  idle_minutes: 1440
+  at_hour: 4
+group_sessions_per_user: true
+platform_toolsets:
+  cli:
+    - clarify
+    - memory
+    - session_search
+    - skills
+    - todo
+    - vision
+    - web
+  slack:
+    - browser
+    - clarify
+    - code_execution
+    - computer_use
+    - context_engine
+    - cronjob
+    - delegation
+    - file
+    - image_gen
+    - memory
+    - session_search
+    - skills
+    - terminal
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+    - x_search
+_config_version: 45
+
+# ── Security ──────────────────────────────────────────────────────────
+# Secret redaction is ON by default — strings that look like API keys,
+# tokens, and passwords are masked in tool output, logs, and chat
+# responses before the model or user ever sees them. Set redact_secrets
+# to false to disable (e.g. when developing the redactor itself).
+# tirith pre-exec scanning is enabled by default when the tirith binary
+# is available. Configure via security.tirith_* keys or env vars
+# (TIRITH_ENABLED, TIRITH_BIN, TIRITH_TIMEOUT, TIRITH_FAIL_OPEN).
+#
+# security:
+#   redact_secrets: true
+#   tirith_enabled: true
+#   tirith_path: "tirith"
+#   tirith_timeout: 5
+#   tirith_fail_open: true
+
+# ── Fallback Model ────────────────────────────────────────────────────
+# Automatic provider failover when primary is unavailable.
+# Uncomment and configure to enable. Triggers on rate limits (429),
+# overload (529), service errors (503), or connection failures.
+#
+# Supported providers:
+#   openrouter   (OPENROUTER_API_KEY)  — routes to any model
+#   openai-codex (OAuth — hermes auth) — OpenAI Codex
+#   nous         (OAuth — hermes auth) — Nous Portal
+#   zai          (ZAI_API_KEY)         — Z.AI / GLM
+#   kimi-coding  (KIMI_API_KEY)        — Kimi / Moonshot
+#   kimi-coding-cn (KIMI_CN_API_KEY)   — Kimi / Moonshot (China)
+#   minimax      (MINIMAX_API_KEY)     — MiniMax
+#   minimax-cn   (MINIMAX_CN_API_KEY)  — MiniMax (China)
+#   bedrock      (AWS IAM / boto3)     — AWS Bedrock (Converse API)
+#
+# For custom OpenAI-compatible endpoints, add base_url and key_env.
+#
+# fallback_model:
+#   provider: openrouter
+#   model: anthropic/claude-sonnet-4

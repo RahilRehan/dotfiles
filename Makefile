@@ -1,4 +1,4 @@
-.PHONY: install stow brew lint help ai-sync micro-plugin
+.PHONY: install stow hermes hermes-install brew lint help ai-sync micro-plugin
 
 install: ## Full install (packages + stow + shell setup)
 	bash install.sh
@@ -14,6 +14,17 @@ stow: ## Re-stow all packages
 		stow --restow --target="$$HOME" "$$package"; \
 		echo "ok $$package"; \
 	done
+
+hermes: ## Link the complete native Hermes home from this repository
+	@if [ -e "$$HOME/.hermes" ] && [ ! -L "$$HOME/.hermes" ]; then \
+		echo "refusing to replace existing real $$HOME/.hermes" >&2; \
+		exit 1; \
+	fi
+	@ln -sfn "$(CURDIR)/hermes/.hermes" "$$HOME/.hermes"
+	@echo "ok hermes -> $$HOME/.hermes"
+
+hermes-install: ## Install or update Hermes using the official installer
+	@curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 
 brew: ## Install/update Homebrew packages
 	brew bundle --file=Brewfile
