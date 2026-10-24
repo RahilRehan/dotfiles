@@ -1,10 +1,15 @@
-.PHONY: install stow hermes hermes-install brew lint help ai-sync micro-plugin
+.PHONY: install stow hermes hermes-install brew mise lint help ai-sync ai-skills micro-plugin
 
 install: ## Full install (packages + stow + shell setup)
 	bash install.sh
 
 ai-sync: ## Generate MCP configs from ai/mcp/servers.json
 	bash ai/bin/ai-sync
+
+ai-skills: ## Install repository skills for Cursor, Claude Code, and Codex
+	@find ai/skills -mindepth 2 -maxdepth 2 -name SKILL.md -exec dirname {} \; | sort -u | while read -r skill; do \
+		mise exec -- skills add "$$skill" -g -a cursor -a claude-code -a codex -y; \
+	done
 
 micro-plugin: ## Install the Micro preview plugin
 	micro -plugin install preview
@@ -28,6 +33,9 @@ hermes-install: ## Install or update Hermes using the official installer
 
 brew: ## Install/update Homebrew packages
 	brew bundle --file=Brewfile
+
+mise: ## Install/update mise-managed tools (Node, npm-backed CLIs)
+	mise install
 
 unstow: ## Remove all symlinks (reverse stow)
 	@for package in zsh starship git bat mise micro; do \

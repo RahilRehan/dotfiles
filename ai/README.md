@@ -17,6 +17,13 @@ link it into an agent-specific directory. The repository remains the editable
 source; reinstall after changing a skill. Built-in Codex skills under
 `~/.codex/skills/.system/` are managed by Codex and do not belong here.
 
+`install.sh` installs Node.js and automatically installs every repository skill
+found under `ai/skills/`. To install or update them manually, run:
+
+```bash
+make ai-skills
+```
+
 ## MCP servers
 
 Edit only [`mcp/servers.json`](mcp/servers.json), then run:

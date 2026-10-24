@@ -18,12 +18,14 @@ brew "lazygit"
 brew "mise"
 brew "direnv"
 brew "uv"
+brew "node"
 
 # Prompt and readable file output
 brew "starship"
 brew "bat"
 
 # Interactive shell feedback
+brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
 # Micro preview plugin dependency

@@ -48,6 +48,16 @@ stow_packages() {
 	done
 }
 
+install_mise_tools() {
+    if ! command -v mise &>/dev/null; then
+        warn "mise is unavailable — skipping Node and npm-backed CLIs"
+        return
+    fi
+    # Must run after stow_packages so ~/.config/mise/config.toml is linked.
+    mise install
+    success "mise tools installed"
+}
+
 link_hermes() {
 	if [[ -e "$HOME/.hermes" && ! -L "$HOME/.hermes" ]]; then
 		warn "Refusing to replace existing real $HOME/.hermes"
@@ -81,6 +91,40 @@ install_ai_config() {
     else
         warn "jq is unavailable — skipping AI harness configuration"
     fi
+}
+
+install_ai_skills() {
+    local skill_dir found=0
+
+    for skill_dir in "$DOTFILES_DIR"/ai/skills/*; do
+        if [[ -f "$skill_dir/SKILL.md" ]]; then
+            found=1
+            break
+        fi
+    done
+    if [[ "$found" -eq 0 ]]; then
+        info "No repository AI skills to install"
+        return
+    fi
+
+    # mise puts `skills` on PATH via config.toml; npx is the fallback for a
+    # machine without mise.
+    local skills_cmd
+    if command -v mise &>/dev/null; then
+        skills_cmd=(mise exec -- skills)
+    elif command -v npx &>/dev/null; then
+        skills_cmd=(npx --yes skills)
+    else
+        warn "neither mise nor npx is available — skipping AI skills (Node.js is required)"
+        return
+    fi
+
+    for skill_dir in "$DOTFILES_DIR"/ai/skills/*; do
+        if [[ -f "$skill_dir/SKILL.md" ]]; then
+            "${skills_cmd[@]}" add "$skill_dir" -g -a cursor -a claude-code -a codex -y
+            success "Installed AI skill $(basename "$skill_dir")"
+        fi
+    done
 }
 
 setup_shell() {
@@ -142,10 +186,12 @@ main() {
     mkdir -p "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/state/zsh"
     backup_existing
     stow_packages
+    install_mise_tools
     link_hermes
     install_hermes
     install_micro_plugin
     install_ai_config
+    install_ai_skills
     setup_shell
     setup_git_user
 
