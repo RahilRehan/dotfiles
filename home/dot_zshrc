@@ -1,0 +1,61 @@
+source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/env.zsh"
+
+export EDITOR="micro"
+command -v cursor >/dev/null && export EDITOR="cursor --wait"
+export VISUAL="$EDITOR"
+export PAGER="less"
+export LANG="en_US.UTF-8"
+
+# Shared history, directory navigation, and ordinary tab completion.
+HISTFILE="$XDG_STATE_HOME/zsh/history"
+HISTSIZE=100000
+SAVEHIST=100000
+mkdir -p "${HISTFILE:h}" "$XDG_CACHE_HOME/zsh"
+setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS HIST_VERIFY AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT INTERACTIVE_COMMENTS NO_BEEP COMPLETE_IN_WORD PIPE_FAIL
+
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
+autoload -U select-word-style
+select-word-style bash
+bindkey '^[[1;3D' backward-word
+bindkey '^[[1;3C' forward-word
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ll='ls -lAFh'
+alias la='ls -A'
+alias reload='exec zsh'
+
+if [[ -o zle && "$TERM" != dumb ]] && command -v fzf >/dev/null; then
+    source <(fzf --zsh)
+    bindkey '^I' expand-or-complete
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+    export FZF_DEFAULT_OPTS='--height=60% --layout=reverse --border=rounded'
+    export FZF_CTRL_T_OPTS="--preview 'bat --paging=never --color=always --line-range :300 {}'"
+    export FZF_ALT_C_OPTS="--preview 'ls -la {}'"
+fi
+
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+command -v mise >/dev/null && eval "$(mise activate zsh)"
+command -v direnv >/dev/null && eval "$(direnv hook zsh)"
+if [[ -o zle && "$TERM" != dumb ]] && command -v starship >/dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+# Machine-specific settings stay local and outside chezmoi's source state.
+[[ -f "$XDG_CONFIG_HOME/zsh/local.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/local.zsh"
+
+# Syntax highlighting must be last, after other ZLE widgets.
+if [[ -o zle && "$TERM" != dumb ]]; then
+    for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
+        plugin_file="${HOMEBREW_PREFIX:-/opt/homebrew}/share/$plugin/$plugin.zsh"
+        [[ -r "$plugin_file" ]] && source "$plugin_file"
+    done
+    unset plugin plugin_file
+fi

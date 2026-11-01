@@ -1,0 +1,3 @@
+# Login shells, including noninteractive harness commands, need Homebrew and mise.
+[[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/profile.local.zsh" ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/profile.local.zsh"
+source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/env.zsh"
