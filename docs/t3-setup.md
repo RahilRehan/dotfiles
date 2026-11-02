@@ -78,17 +78,20 @@ T3 product telemetry and connection tracing are opted out with
 in `~/.t3/service.env`, preserving other service variables. Service variables
 and credentials are not copied into the repository.
 
-The opt-out takes effect when the service and desktop app next start. Restart
-activation is pending; the active setup session has not been interrupted.
-After this review, restart the service with `t3 service restart`, then fully
-quit and reopen the desktop app. This controls T3 reporting, independently of
-provider telemetry settings.
+The service and desktop app were restarted on 2026-11-02. The live desktop and
+server processes were verified with `T3CODE_TELEMETRY_ENABLED=false`, and the
+active server reconnected successfully. The current local listener is owned by
+the desktop app. The background service was restarted as well.
+
+After future changes to this variable, restart the service with
+`t3 service restart`, then fully quit and reopen the desktop app. This controls
+T3 reporting, independently of provider telemetry settings.
 
 ## Reproducing server defaults
 
 `home/dot_t3/private_userdata/modify_private_settings.json` uses jq to merge only the
-agreed server defaults and keeps T3's data directory private. It preserves other settings and contains no local
-account data. `chezmoi apply` reapplies this baseline; change the source here
+agreed server defaults and keeps T3's data directory private. It preserves other
+settings and contains no local account data. `chezmoi apply` reapplies this baseline; change the source here
 when making a lasting change to a managed preference. Project overrides still
 take precedence. Authenticate the named Codex and Claude providers separately
 on another machine.
@@ -113,10 +116,13 @@ system temporary directory outside home did not inherit this rule. Projects
 outside home need a project-level link to the same shared file or another
 verified global-rule mechanism for that Cursor version.
 
-## Remaining setup and verification
+## Closeout verification
 
-- Finish the reproducible settings record and review pending dotfiles changes.
-- Activate and verify the telemetry opt-out after restarting T3.
+The configuration was reviewed and committed. After the restart, the primary
+and fallback model options, Full access permissions, new-worktree default,
+local-file cleanup protection, and 30/14-day retention periods were verified.
+The full dotfiles checks passed, including chezmoi consistency and the private
+data-directory permissions.
 
 ## Deferred work
 
