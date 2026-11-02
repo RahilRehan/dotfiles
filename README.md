@@ -111,8 +111,10 @@ Codex and local Cursor sessions discover the shared `~/.agents/skills` copy;
 skills.sh links Claude Code to it. These are local installs, not Cursor cloud sync.
 
 `skills/upstream.tsv` records the retained Archify Review, Excalidraw Diagram
-Generator, and Remove Deadcode skills at verified Git revisions. The installer
-uses skills CLI 1.7.0 through mise's Node and npm's download cache. To update a
+Generator, and Remove Deadcode skills at verified Git revisions. It also records
+the complete pstack bundle, with `poteto-mode` as
+the bundle's presence check. No pstack plugin or always-on mode is required.
+The installer uses skills CLI 1.7.0 through mise's Node and npm's download cache. To update a
 retained skill, review a new upstream revision and change its URL in that file.
 It installs only the three named harness targets and does not enable MCPs.
 

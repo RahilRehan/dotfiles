@@ -11,8 +11,8 @@ run_skills add "$SKILLS_DIR" --skill terminal-toolkit \
     --global --agent codex claude-code cursor --yes
 
 # Keep retained third-party skills pinned, with provenance owned by skills.sh.
-while IFS=$'\t' read -r name source; do
+while IFS=$'\t' read -r name source selection; do
     [[ -z "$name" || "$name" == \#* ]] && continue
-    run_skills add "$source" --skill "$name" \
+    run_skills add "$source" --skill "${selection:-$name}" \
         --global --agent codex claude-code cursor --yes
 done < "$SKILLS_DIR/upstream.tsv"

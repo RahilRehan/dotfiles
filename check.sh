@@ -62,7 +62,7 @@ for source in skills/*/SKILL.md; do
         cmp "$source" "$root/$name/SKILL.md"
     done
 done
-while IFS=$'\t' read -r name source; do
+while IFS=$'\t' read -r name source selection; do
     [[ -z "$name" || "$name" == \#* ]] && continue
     for root in "$HOME/.agents/skills" "$HOME/.claude/skills"; do
         [[ -f "$root/$name/SKILL.md" ]] || { echo "Missing skill: $name in $root" >&2; exit 1; }
