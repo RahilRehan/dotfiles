@@ -5,6 +5,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 bash -n install.sh
 bash -n check.sh
 bash -n skills/install.sh
+sh -n home/dot_t3/modify_private_service.env
+sh -n home/dot_t3/private_userdata/modify_private_settings.json
 for file in home/dot_zshrc home/dot_zprofile home/dot_config/zsh/*.zsh; do
     zsh -n "$file"
 done
@@ -34,6 +36,24 @@ for tool in jq fzf fd rg bat zoxide direnv uv mise starship micro git gh codex c
 done
 bat --paging=never --color=never README.md >/dev/null
 
+# Check only the managed service variable; never source or dump service secrets.
+rg -q '^T3CODE_TELEMETRY_ENABLED=false$' "$HOME/.t3/service.env"
+telemetry="$(env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin /bin/zsh -lc 'print -r -- "$T3CODE_TELEMETRY_ENABLED"')"
+[[ "$telemetry" == false ]] || { echo "T3 telemetry opt-out missing from shell startup" >&2; exit 1; }
+
+# All personal harness instructions resolve to one managed file.
+instructions="$HOME/.config/agents/AGENTS.md"
+cmp home/dot_config/agents/AGENTS.md "$instructions"
+for target in "$HOME/.codex/AGENTS.md" "$HOME/.claude/CLAUDE.md" "$HOME/.cursor/rules/defaults.mdc"; do
+    [[ -L "$target" && "$(readlink "$target")" == "$instructions" ]] || {
+        echo "Incorrect shared instruction link: $target" >&2; exit 1;
+    }
+    cmp "$instructions" "$target"
+done
+[[ ! -s "$HOME/.codex/AGENTS.override.md" ]] || {
+    echo "AGENTS.override.md shadows the shared Codex defaults" >&2; exit 1;
+}
+
 # Codex and Cursor use the shared directory; Claude Code uses its skills.sh link.
 for source in skills/*/SKILL.md; do
     [[ -f "$source" ]] || continue
@@ -49,4 +69,4 @@ while IFS=$'\t' read -r name source; do
     done
 done < skills/upstream.tsv
 node tests/terminal-toolkit.mjs
-echo "Checks passed: packages, app files, configuration, mise Node, tools, and skills for Codex/Claude/Cursor."
+echo "Checks passed: packages, app files, configuration, mise Node, tools, shared instructions, and skills for Codex/Claude/Cursor."

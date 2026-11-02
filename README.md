@@ -25,7 +25,7 @@ uses zsh by default. Sign in to the harnesses separately.
 | Source | Owns |
 |---|---|
 | `Brewfile` | CLI tools, plain Micro, Codex, Claude Code, Cursor, T3 Nightly, and the selected Mac apps |
-| `home/` | Zsh, Git, Starship, bat, and mise configuration |
+| `home/` | Zsh, Git, Starship, bat, mise, shared harness instructions, and selected T3 server defaults |
 | `home/dot_config/mise/config.toml` | Global Node LTS; project mise files can override it |
 | `skills/` | Custom skill sources and pinned upstream skill installation |
 | Local files | Git identities, machine overrides, credentials, sessions, and application data |
@@ -57,9 +57,49 @@ The bootstrap is currently tested on macOS; Linux/WSL installation comes later.
 
 ## Local settings
 
+Chezmoi disables T3 product telemetry and connection tracing in shell startup
+and merges the opt-out into `~/.t3/service.env` without tracking its other
+variables. Restart T3's service and desktop app after first applying this change.
+
 Put machine-specific shell settings in `~/.config/zsh/local.zsh`. It is never
 managed by chezmoi. Login-only settings can go in `profile.local.zsh` in that
 same directory. MCP connections remain outside this repository.
+
+## Shared harness instructions
+
+The broader T3 Code configuration review is recorded in
+[Personal T3 Code setup](docs/t3-setup.md).
+Its selected server defaults are merged by chezmoi into T3's settings file,
+preserving local provider/account configuration. Device appearance and chat
+preferences remain a checklist in that guide.
+
+Edit `home/dot_config/agents/AGENTS.md`, then run `chezmoi apply`. This is the
+single source of personal defaults. Chezmoi installs it at
+`~/.config/agents/AGENTS.md` and creates these symlinks:
+
+- `~/.codex/AGENTS.md`
+- `~/.claude/CLAUDE.md`
+- `~/.cursor/rules/defaults.mdc`
+
+The `alwaysApply: true` frontmatter enables Cursor's local user rule; Claude
+Code and Codex consume the same file as Markdown. The actual instructions are
+in the file, so routine terminal commands need no skill discovery or file read
+by the model. Keep detailed procedures in skills and repository-specific
+instructions in the repository. A nonempty `~/.codex/AGENTS.override.md` replaces
+the global Codex file; `check.sh` flags it.
+
+Start fresh harness sessions after changing defaults. These files configure
+local sessions on each bootstrapped machine; they are not Cursor account or
+cloud synchronization.
+
+`bash check.sh` checks the link targets and shared contents. Confirm actual
+loading in a fresh session by asking the harness to summarize its terminal
+defaults without using tools. For Claude Code, `/memory` also lists loaded files;
+for Cursor, check Customize → Rules. Shell checks alone do not prove that a
+particular harness version has injected the instructions into model context.
+Fresh Claude and Cursor CLI probes passed without tool calls during this setup.
+The installed Cursor CLI inherits the home rule for projects beneath the home
+directory; an outside-home project needs its own link to the shared rule.
 
 ## Skills
 

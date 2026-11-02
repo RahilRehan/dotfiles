@@ -10,5 +10,8 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
+# T3's desktop app reads this from the shell profile on macOS/Linux.
+export T3CODE_TELEMETRY_ENABLED=false
+
 typeset -U path
 path=("$XDG_DATA_HOME/mise/shims" "$HOME/.local/bin" $path)

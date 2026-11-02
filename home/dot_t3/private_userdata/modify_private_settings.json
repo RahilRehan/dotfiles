@@ -1,0 +1,49 @@
+#!/bin/sh
+# Merge portable choices while preserving accounts, provider paths, and other state.
+jq -s '
+    if length > 1 then error("Expected one T3 settings object")
+    else (.[0] // {}) end
+    | if type != "object" then error("Expected a T3 settings object") else . end
+    | .defaultModelSelection = {
+        instanceId: "codex",
+        model: "gpt-6.1-sol",
+        options: [
+            {id: "reasoningEffort", value: "high"},
+            {id: "serviceTier", value: "default"}
+        ]
+    }
+    | .fallbackModelSelection = {
+        instanceId: "claudeAgent",
+        model: "claude-sonnet-5-5",
+        options: [
+            {id: "effort", value: "high"},
+            {id: "fastMode", value: false}
+        ]
+    }
+    | .defaultRuntimeMode = "full-access"
+    | .defaultThreadEnvMode = "worktree"
+    | .defaultAutoPull = true
+    | .sidebarAutoSettleAfterDays = 7
+    | .sidebarAutoSettleKeepPullRequests = true
+    | .autoResumeLimitedThreads = true
+    | .pullRequestMergeMethod = "squash"
+    | .sourceControlWritingStyle = ((.sourceControlWritingStyle // {}) + {
+        mode: "conventional_commits",
+        followChangeRequestTemplates: true
+    })
+    | .backgroundActivity = ((.backgroundActivity // {}) + {
+        schemaVersion: 1,
+        profile: "performance",
+        overrides: {}
+    })
+    | .storageCleanup = ((.storageCleanup // {}) + {
+        worktreeKeepWhen: "any-local-files",
+        worktreeOnMerge: true,
+        worktreeOnDelete: false,
+        worktreeUnchanged: false,
+        worktreeAfterDays: null,
+        worktreeSettledAfterDays: null,
+        browserArtifactsAfterDays: 30,
+        logsAfterDays: 14
+    })
+'
